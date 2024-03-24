@@ -1,7 +1,7 @@
 # \[Anna, Jiyun Kim, Pedram\]
 
 **Group members:**
-- Jiyun Kimfff
+- Jiyun Kim
 - Pedram Nick Yazdanfard
 - Anna Svenningsen
 
