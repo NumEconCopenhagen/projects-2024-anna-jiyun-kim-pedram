@@ -142,11 +142,11 @@ class MarketModel():
         optimal_p1 = None
         for p1 in P101:
             #calculate demands for A at this price
-            x1A = demand_A1(self, p1)
-            x2A = demand_A2(self, p1)
+            x1A = self.demand_A1(self, p1)
+            x2A = self.demand_A2(self, p1)
 
             # Calculate utility for A at this price
-            current_utility = utility_A(x1A, x2A)
+            current_utility = self.utility_A(x1A, x2A)
             # Update maximum utility and optimal price if current utility is higher
             if current_utility > max_utility:
                 max_utility = current_utility
