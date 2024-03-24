@@ -151,3 +151,4 @@ class MarketModel():
         if current_utility > max_utility:
             max_utility = current_utility
             optimal_p1 = p1
+            return optimal_p1, max_utility
