@@ -199,8 +199,8 @@ class MarketModel():
 
         #Results
         x1A_opt, x2A_opt = result.x
-        x1A_opt = result.x
-        x2A_opt = result.x
+        x1A_opt = result.x[:1]
+        x2A_opt = result.x[1:]
         x1B_opt = 1-x1A_opt
         x2B_opt = 1-x1B_opt
         plt.figure(figsize=(6, 6))
