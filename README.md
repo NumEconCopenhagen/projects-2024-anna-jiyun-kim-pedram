@@ -1,9 +1,9 @@
-# \[Group name\]
+# \[Anna, Jiyun Kim, Pedram\]
 
 **Group members:**
-- A
-- B
-- C
+- Jiyun Kimfff
+- Pedram Nick Yazdanfard
+- Anna Svenningsen
 
 This repository contains  
 1. Inaugural project. 
