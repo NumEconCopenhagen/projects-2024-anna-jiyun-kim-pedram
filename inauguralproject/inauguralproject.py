@@ -133,9 +133,22 @@ class MarketModel():
         return self.demand_A1(p1) + self.demand_B1(p1) - 1
     
     #Demand of good 2 for A to solve question 4.b
-    def demand_A2(self, p1):
-        u = (1 - self.par.alpha) * (p1 * self.par.w1A + self.par.p2 * self.par.w2A) / self.par.p2
+    def demand_A2(self, p1, p2):
+        u = (1 - self.par.alpha) * (p1 * self.par.w1A + p2 * self.par.w2A) / p2
         return u
+    max_utility = -np.inf
+    optimal_p1 = None
+    from scipy.optimize import minimize_scalar
+    def find_equilibrium_price(self):
+        epsilon = 1e-6
+        result = minimize_scalar(self.sxcess_demand, bounds = (epsilon,np.inf), method='bounded')
+        if result.success:
+            return result.x
+        else:
+            raise ValueError('Equilibrium price not found.')
+
+print("Optimal price p1 in P1:", optimal_p1)
+print("Maximum utility for A:", max_utility)  
 
     
     
