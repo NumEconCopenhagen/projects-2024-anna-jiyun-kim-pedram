@@ -195,6 +195,10 @@ class MarketModel():
 
         # Draw the box
         plt.plot([0, 1], [0, 1], 'k--')  # Diagonal
+        x1A_opt = result.x[2:]
+        x2A_opt = result.x[:2]
+        x1B_opt = 1-result.x[2:]
+        x2B_opt = 1-result.x[:2]
 
         # Plot A's allocation
         plt.plot(x1A_opt, x2A_opt, 'bo', markersize=10, label='Optimal A')
