@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from types import SimpleNamespace
 
 
+
 class MarketModel():
     def __init__(self, N = 75):
 
