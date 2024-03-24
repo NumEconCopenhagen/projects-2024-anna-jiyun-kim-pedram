@@ -41,9 +41,9 @@ class MarketModel():
         return u
 
     #Define A's demand
-    def demand_A(self, p1):
-        x1 = self.par.alpha * (p1 * self.par.w1A + self.par.p2 * self.par.w2A) / p1
-        x2 = (1 - self.par.alpha) * (p1 * self.par.w1A + self.par.p2 * self.par.w2A) / self.par.p2
+    def demand_A(self, p1, p2):
+        x1 = self.par.alpha * (p1 * self.par.w1A + p2 * self.par.w2A) / p1
+        x2 = (1 - self.par.alpha) * (p1 * self.par.w1A + p2 * self.par.w2A) / p2
         return x1, x2
 
     #Define B's demand
