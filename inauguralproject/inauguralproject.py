@@ -2,7 +2,7 @@ from types import SimpleNamespace
 
 
 class MarketModel:
-    def __init__(self):
+    def __init__(self, N=75):
 
         self.par = SimpleNamespace()
 
