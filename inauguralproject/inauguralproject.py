@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from scipy.optimize import fsolve
 from scipy.optimize import minimize
 from types import SimpleNamespace
+from scipy.optimize import minimize_scalar
 
 class MarketModel():
     def __init__(self, N = 75):
