@@ -187,4 +187,30 @@ class MarketModel():
         x1B, x2B = 1 - x1A, 1 - x2A
         return -(self.utility_A(x1A, x2A) + self.utility_B(x1B, x2B))
     
+    #Question 6b
+    #Set up the figure
+    def edgeworth6a(self):
+        plt.figure(figsize=(6, 6))
+        plt.title('Edgeworth Box for Optimal Allocations')
+
+        # Draw the box
+        plt.plot([0, 1], [0, 1], 'k--')  # Diagonal
+
+        # Plot A's allocation
+        plt.plot(x1A_opt, x2A_opt, 'bo', markersize=10, label='Optimal A')
+
+        # Plot B's allocation (which is 1 - A's allocation for both goods)
+        plt.plot(x1B_opt, x2B_opt, 'ro', markersize=10, label='Optimal B')
+
+        # Add some labels and a legend
+        plt.xlabel('Good 1')
+        plt.ylabel('Good 2')
+        plt.xlim(0, 1)
+        plt.ylim(0, 1)
+        plt.axhline(0.5, color='grey', linestyle='--')
+        plt.axvline(0.5, color='grey', linestyle='--')
+        plt.grid(True)
+        plt.legend()
+        plt.show
+    
     
