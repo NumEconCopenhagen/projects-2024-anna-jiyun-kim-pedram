@@ -253,57 +253,58 @@ class MarketModel():
             print(f"Element {i}: ({w1A:.4f}, {w2A:.4f})")
     
     #Question 8, new endowments and new utilities and demands
-    # define endowments knowing that; w1A + w1B = w1 and w2A + w2B = w2
         self.par.w1A_uniform = np.random.uniform(size=N)
         self.par.w2A_uniform = np.random.uniform(size=N)
         self.par.w1B_uniform = 1 - self.par.w1A_uniform
         self.par.w2B_uniform = 1 - self.par.w2A_uniform
-    
+
+        #Set p2 as numeraire
+        self.par.p2 = 1
+
+        #Used to define the number of points along each axis, for which the model evaluates potential pareto improvements.
+        self.N = N
+
     #Define utility for A
-    def utility_A8(self, x1, x2):
+    def utility_A(self, x1, x2):
         u = x1**self.par.alpha * x2**(1-self.par.alpha)
         return u
 
     # Define the utility for B
-    def utility_B8(self, x1, x2):
+    def utility_B(self, x1, x2):
         u =  x1**self.par.beta * x2**(1-self.par.beta)
         return u
     
     # Define A's demand
-    def demand_A8(self, p1, p2):
+    def demand_A(self, p1, p2):
         x1 = self.par.alpha * (p1 * self.par.w1A_uniform + p2 * self.par.w2A_uniform) / p1
         x2 = (1 - self.par.alpha) * (p1 * self.par.w1A_uniform + p2 * self.par.w2A_uniform) / p2
         return x1, x2
 
     # Define B's demand
-    def demand_B8(self, p1, p2):
+    def demand_B(self, p1, p2):
         x1 = self.par.beta * (p1 * self.par.w1B_uniform + p2 * self.par.w2B_uniform) / p1
         x2 = (1 - self.par.beta) * (p1 * self.par.w1B_uniform + p2 * self.par.w2B_uniform) / p2
         return x1, x2
-    
-    # check market clearing conditions
-    def excess_demand8(self, p1):
-        x1A, _ = self.demand_A8(p1, self.par.p2)
-        x1B, _ = self.demand_B8(p1, self.par.p2)
+    # Check market clearing conditions.
+    def excess_demand(self, p1):
+        x1A, _ = self.demand_A(p1, self.par.p2)
+        x1B, _ = self.demand_B(p1, self.par.p2)
         excess_demand_1 = np.sum(x1A + x1B - (self.par.w1A_uniform + self.par.w1B_uniform))
         return excess_demand_1
 
-    def find_equilibrium_price8(self):
-        result = minimize_scalar(self.excess_demand8, bounds=(0, 10), method='bounded')
+    def find_equilibrium_price(self):
+        result = minimize_scalar(self.excess_demand, bounds=(0, 10), method='bounded')
         if result.success:
             return result.x
         else:
             raise ValueError('Equilibrium price not found.')
 
     # Plotting the edgeworth box
-    def plot_edgeworth_box8(self):
-        p1_eq = self.find_equilibrium_price8()
-        x1A_eq, x2A_eq = self.demand_A8(p1_eq, self.par.p2)
+    def plot_edgeworth_box(self):
+        p1_eq = self.find_equilibrium_price()
+        x1A_eq, x2A_eq = self.demand_A(p1_eq, self.par.p2)
 
         fig, ax = plt.subplots()
-        
-
-
         # Plot equilibrium allocations
         ax.plot(x1A_eq, x2A_eq, 'o', color='green', label='Equilibrium A')
 
@@ -313,4 +314,3 @@ class MarketModel():
         ax.set_title('Edgeworth Box')
         ax.legend()
         plt.show()
-    
