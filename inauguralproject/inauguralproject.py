@@ -120,6 +120,13 @@ class MarketModel():
         for i, p_1 in enumerate(P1):
             print(f"For p1 = {p_1:.2f}, Error: ε(p, ω) = ({errors[i][0]:.4f}, {errors[i][1]:.4f})")
             #Determine whether the market for good 1 is in equilibrium at a given price p1
+    #demand of good 1 for A and B to solve question 3
+    def demand_A1(self, p1):
+        u = self.par.alpha * (p1 * self.par.w1A + self.par.p2 * self.par.w2A) / p1
+        return u
+    def demand_B1(self, p1):
+        u = self.par.beta * (p1 * self.par.w1B + self.par.p2 * self.par.w2B) / p1
+        return u
     def market_clearing_condition(self, p1):
         #Calculate the excess demand (or excess supply). Since the total quantity supplied is 1, 1 is subtracted from the total demand 
-        return self.demand_A(p1, self.par.p2) + self.demand_B(p1, self.par.p2) - 1
+        return self.demand_A1(p1) + self.demand_B1(p1) - 1
