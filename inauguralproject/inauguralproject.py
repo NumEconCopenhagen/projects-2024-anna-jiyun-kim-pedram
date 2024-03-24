@@ -91,3 +91,27 @@ class MarketModel():
         ax.set_title('Edgeworth Box')
         ax.legend()
         plt.show()
+
+         # Calculate errors for different values of p1
+    def calculate_errors(self):
+        #p1 ranges from 0.5 to 2.5 in the steps determined by 2/N
+        P1 = np.arange(0.5, 2.6, 2 / self.par.N1)
+        #Create an empty list
+        errors = []
+
+        #Iterate over each value of p1 where p2 is numeraire
+        for p1 in P1:
+            x1A, x2A = self.demand_A(p1, self.p2)
+            x1B, x2B = self.demand_B(p1, self.p2)    
+            
+    
+            #Calculates the errors for both goods for each value in the pricevector. 
+            error_1 = x1A + x1B - (self.par.w1A + self.par.w1B)
+            error_2 = x2A + x2B - (self.par.w2A + self.par.w2B)
+    
+            #Creates a tupple 
+            errors.append((error_1, error_2))
+
+        # Print errors for each p1
+        for i, p_1 in enumerate(P1):
+            print(f"For p1 = {p_1:.2f}, Error: ε(p, ω) = ({errors[i][0]:.4f}, {errors[i][1]:.4f})")
