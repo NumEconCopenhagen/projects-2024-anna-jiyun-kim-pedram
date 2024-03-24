@@ -250,3 +250,43 @@ class MarketModel():
         for i, (w1A, w2A) in enumerate(W, start=1):
             print(f"Element {i}: ({w1A:.4f}, {w2A:.4f})")
     
+    #Question 8, new endowments
+    # define endowments knowing that; w1A + w1B = w1 and w2A + w2B = w2
+        self.par.w1A_uniform = np.random.uniform(size=N)
+        self.par.w2A_uniform = np.random.uniform(size=N)
+        self.par.w1B_uniform = 1 - self.par.w1A_uniform
+        self.par.w2B_uniform = 1 - self.par.w2A_uniform
+    
+    # check market clearing conditions
+    def excess_demand8(self, p1):
+        x1A, _ = self.demand_A(p1, self.par.p2)
+        x1B, _ = self.demand_B(p1, self.par.p2)
+        excess_demand_1 = np.sum(x1A + x1B - (self.par.w1A_uniform + self.par.w1B_uniform))
+        return excess_demand_1
+
+    def find_equilibrium_price8(self):
+        result = minimize_scalar(self.excess_demand8, bounds=(0, 10), method='bounded')
+        if result.success:
+            return result.x
+        else:
+            raise ValueError('Equilibrium price not found.')
+
+    # Plotting the edgeworth box
+    def plot_edgeworth_box8(self):
+        p1_eq = self.find_equilibrium_price8()
+        x1A_eq, x2A_eq = self.demand_A(p1_eq, self.par.p2)
+
+        fig, ax = plt.subplots()
+        
+
+
+        # Plot equilibrium allocations
+        ax.plot(x1A_eq, x2A_eq, 'o', color='green', label='Equilibrium A')
+
+        # Set the labels
+        ax.set_xlabel('Good 1')
+        ax.set_ylabel('Good 2')
+        ax.set_title('Edgeworth Box')
+        ax.legend()
+        plt.show()
+    
