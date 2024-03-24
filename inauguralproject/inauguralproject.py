@@ -131,5 +131,30 @@ class MarketModel():
     def market_clearing_condition(self, p1):
         #Calculate the excess demand (or excess supply). Since the total quantity supplied is 1, 1 is subtracted from the total demand 
         return self.demand_A1(p1) + self.demand_B1(p1) - 1
+    #Question 5a
+    # Constraint
+    def constraint(self, x):
+        x1_A, x2_A, x1_B, x2_B = x
+        return self.utility_B(x1_B, x2_B) - self.utility_B(self.par.w1B, self.par.w2B)
+
+    # obj. func. to maximize utility of A
+    def objective(self, x):
+        x1_A, x2_A, _, _ = x
+        return -self.utility_A(x1_A, x2_A)
+
+    # Allocation where A chooses B's consumption
+    def find_alloc(self):
+        # Initial guess for A
+        x0 = [self.par.w1A, self.par.w2A, self.par.w1B, self.par.w2B]
+        # constraint
+        constraints = [{'type': 'ineq', 'fun': self.constraint}]
+        # bounds
+        bounds = [(0, 1), (0, 1), (0, 1), (0, 1)]
+        # constraint for x1 and x2
+        constraint_A = {'type': 'ineq', 'fun': lambda x: 1 - x[0] - x[2]}
+        constraint_B = {'type': 'ineq', 'fun': lambda x: 1 - x[1] - x[3]}
+        # Max utility of A
+        result = minimize(self.objective, x0, constraints=constraints + [constraint_A, constraint_B], bounds=bounds)
+        return result.x
     
     
