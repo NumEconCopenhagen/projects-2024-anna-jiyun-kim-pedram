@@ -134,51 +134,51 @@ class MarketModel():
     
     #Question 5a
     # Constraint
-    def constraint(self, x):
+    def constraint5a(self, x):
         x1_A, x2_A, x1_B, x2_B = x
         return self.utility_B(x1_B, x2_B) - self.utility_B(self.par.w1B, self.par.w2B)
 
     # obj. func. to maximize utility of A
-    def objective(self, x):
+    def objective5a(self, x):
         x1_A, x2_A, _, _ = x
         return -self.utility_A(x1_A, x2_A)
 
     # Allocation where A chooses B's consumption
-    def find_alloc(self):
+    def find_alloc5a(self):
         # Initial guess for A
         x0 = [self.par.w1A, self.par.w2A, self.par.w1B, self.par.w2B]
         # constraint
-        constraints = [{'type': 'ineq', 'fun': self.constraint}]
+        constraints = [{'type': 'ineq', 'fun': self.constraint5a}]
         # bounds
         bounds = [(0, 1), (0, 1), (0, 1), (0, 1)]
         # constraint for x1 and x2
         constraint_A = {'type': 'ineq', 'fun': lambda x: 1 - x[0] - x[2]}
         constraint_B = {'type': 'ineq', 'fun': lambda x: 1 - x[1] - x[3]}
         # Max utility of A
-        result = minimize(self.objective, x0, constraints=constraints + [constraint_A, constraint_B], bounds=bounds)
+        result = minimize(self.objective5a, x0, constraints=constraints + [constraint_A, constraint_B], bounds=bounds)
         return result.x
     
     #Question 5b
     # Constraint
-    def constraint(self, x):
+    def constraint5b(self, x):
         x1_A, x2_A = x
         return self.utility_B(1 - x1_A, 1 - x2_A) - self.utility_B(self.par.w1B, self.par.w2B)
 
     # obj. func. to maximize utility of A
-    def objective(self, X):
+    def objective5b(self, X):
         x1_A, x2_A = X
         return -self.utility_A(x1_A, x2_A)
 
     # Alloc. of A within bounds
-    def find_alloc(self):
+    def find_alloc5b(self):
         # Initial guess
         x0 = [0.5, 0.5]
         # constraint
-        constraints = [{'type': 'ineq', 'fun': self.constraint}]
+        constraints = [{'type': 'ineq', 'fun': self.constraint5b}]
         # bounds
         bounds = [(0,1), (0,1)]
         # maximize utility of A
-        result = minimize(self.objective,x0,constraints=constraints,bounds=bounds)
+        result = minimize(self.objective5b,x0,constraints=constraints,bounds=bounds)
         return result.x
     
     
