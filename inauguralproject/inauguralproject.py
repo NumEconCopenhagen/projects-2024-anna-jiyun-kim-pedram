@@ -25,6 +25,9 @@ class MarketModel():
 
         #Used to define the number of points along each axis, for which the model evaluates potential pareto improvements.
         self.N = N
+        #Initial values for question 2
+        self.par.N1 = 10
+        self.par.N2 = 5
 
     #Define the utility for A
     def utility_A(self, x1, x2):
@@ -101,8 +104,8 @@ class MarketModel():
 
         #Iterate over each value of p1 where p2 is numeraire
         for p1 in P1:
-            x1A, x2A = self.demand_A(p1, self.p2)
-            x1B, x2B = self.demand_B(p1, self.p2)    
+            x1A, x2A = self.demand_A(p1, self.par.p2)
+            x1B, x2B = self.demand_B(p1, self.par.p2)    
             
     
             #Calculates the errors for both goods for each value in the pricevector. 
