@@ -118,3 +118,7 @@ class MarketModel():
         # Print errors for each p1
         for i, p_1 in enumerate(P1):
             print(f"For p1 = {p_1:.2f}, Error: ε(p, ω) = ({errors[i][0]:.4f}, {errors[i][1]:.4f})")
+            #Determine whether the market for good 1 is in equilibrium at a given price p1
+    def market_clearing_condition(self, p1):
+        #Calculate the excess demand (or excess supply). Since the total quantity supplied is 1, 1 is subtracted from the total demand 
+        return self.demand_A(p1) + self.demand_B(p1) - 1
