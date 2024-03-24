@@ -1,5 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy.optimize import fsolve
+from scipy.optimize import minimize
 from types import SimpleNamespace
 
 class MarketModel():
@@ -120,4 +122,4 @@ class MarketModel():
             #Determine whether the market for good 1 is in equilibrium at a given price p1
     def market_clearing_condition(self, p1):
         #Calculate the excess demand (or excess supply). Since the total quantity supplied is 1, 1 is subtracted from the total demand 
-        return self.demand_A(p1) + self.demand_B(p1) - 1
+        return self.demand_A(p1, self.par.p2) + self.demand_B(p1, self.par.p2) - 1
