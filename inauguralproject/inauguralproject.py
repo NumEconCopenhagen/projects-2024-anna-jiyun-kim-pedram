@@ -21,6 +21,11 @@ class MarketModel():
         self.par.w2B = 1 - self.par.w2A
         self.par.w1 = self.par.w1A + self.par.w1B
         self.par.w2 = self.par.w2A + self.par.w2B
+        #endowments for question 8
+        self.par.w1A_uniform = np.random.uniform(size=N)
+        self.par.w2A_uniform = np.random.uniform(size=N)
+        self.par.w1B_uniform = 1 - self.par.w1A_uniform
+        self.par.w2B_uniform = 1 - self.par.w2A_uniform
 
         #Set p2 as numeria
         self.par.p2 = 1
@@ -253,16 +258,6 @@ class MarketModel():
             print(f"Element {i}: ({w1A:.4f}, {w2A:.4f})")
     
     #Question 8, new endowments and new utilities and demands
-        self.par.w1A_uniform = np.random.uniform(size=N)
-        self.par.w2A_uniform = np.random.uniform(size=N)
-        self.par.w1B_uniform = 1 - self.par.w1A_uniform
-        self.par.w2B_uniform = 1 - self.par.w2A_uniform
-
-        #Set p2 as numeraire
-        self.par.p2 = 1
-
-        #Used to define the number of points along each axis, for which the model evaluates potential pareto improvements.
-        self.N = N
 
     #Define utility for A
     def utility_A(self, x1, x2):
