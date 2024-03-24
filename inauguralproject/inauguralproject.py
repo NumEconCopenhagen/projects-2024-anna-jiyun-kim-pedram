@@ -189,7 +189,7 @@ class MarketModel():
     
     #Question 6b
     #Set up the figure
-    def edgeworth6b(self):
+    def plot_edgeworth6b(self):
         plt.figure(figsize=(6, 6))
         plt.title('Edgeworth Box for Optimal Allocations')
 
