@@ -96,7 +96,7 @@ class MarketModel():
         ax.legend()
         plt.show()
 
-         # Calculate errors for different values of p1
+         # Calculate errors for different values of p1 for question 2
     def calculate_errors(self):
         #p1 ranges from 0.5 to 2.5 in the steps determined by 2/N
         P1 = np.arange(0.5, 2.6, 2 / self.par.N1)
@@ -120,7 +120,8 @@ class MarketModel():
         for i, p_1 in enumerate(P1):
             print(f"For p1 = {p_1:.2f}, Error: ε(p, ω) = ({errors[i][0]:.4f}, {errors[i][1]:.4f})")
             #Determine whether the market for good 1 is in equilibrium at a given price p1
-    #demand of good 1 for A and B to solve question 3
+    
+    #Demand of good 1 for A and B to solve question 3
     def demand_A1(self, p1):
         u = self.par.alpha * (p1 * self.par.w1A + self.par.p2 * self.par.w2A) / p1
         return u
@@ -130,3 +131,23 @@ class MarketModel():
     def market_clearing_condition(self, p1):
         #Calculate the excess demand (or excess supply). Since the total quantity supplied is 1, 1 is subtracted from the total demand 
         return self.demand_A1(p1) + self.demand_B1(p1) - 1
+    #Question 4a, define demand of good two for person A
+    def demand_A2(self, p1):
+        u = (1-self.par.alpha) * (p1 * self.par.w1A + self.par.p2 * self.par.w2A) / p1
+        return u
+    #Create the price grid P1(P101) in question 4
+    P101 = 0.5 + 2*np.arrange(N)/self.N
+    #Optimization loop
+    max_utility = -np.inf
+    optimal_p1 = None
+    for p1 in P101:
+        #calculate demands for A at this price
+    x1A = demand_A1(self, p1)
+    x2A = demand_A2(self, p1)
+
+    # Calculate utility for A at this price
+    current_utility = utility_A(x1A, x2A)
+    # Update maximum utility and optimal price if current utility is higher
+    if current_utility > max_utility:
+        max_utility = current_utility
+        optimal_p1 = p1
