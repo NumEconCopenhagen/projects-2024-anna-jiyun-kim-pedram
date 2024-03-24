@@ -1,9 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from types import SimpleNamespace
 from scipy.optimize import fsolve
-
-
+from scipy.optimize import minimize
+from types import SimpleNamespace
 
 class MarketModel():
     def __init__(self, N = 75):
