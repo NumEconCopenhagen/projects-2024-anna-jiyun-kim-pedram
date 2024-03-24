@@ -237,14 +237,15 @@ class MarketModel():
     def set7(self):
         #Draw a set with 50 elements from a uniform distribution
         print('set seed to 1987 and create numbers:')
-        #The seed is set to 1987
         np.random.seed(1987)
 
-        #Generates 50 random numbers from a uniform distribution over [0,1] for both A and B.
-        W1A_uniform = np.random.uniform(size=50)
-        W1B_uniform = np.random.uniform(size=50)
-        # Combine the generated values in a tuple
-        W = list(zip(W1A_uniform, W1B_uniform))
+        W_1_A_uniform = np.random.uniform(size=50)
+        W_1_B_uniform = 1- W_1_A_uniform
+
+
+
+        # Combine the generated values to create the set W
+        W = list(zip(W_1_A_uniform, W_1_B_uniform))
 
         # Display the set W
         print("Set W:")
