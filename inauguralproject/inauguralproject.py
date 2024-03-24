@@ -181,4 +181,10 @@ class MarketModel():
         result = minimize(self.objective5b,x0,constraints=constraints,bounds=bounds)
         return result.x
     
+    #Question 6a
+    def objective6a(self, X):
+        x1A, x2A = X
+        x1B, x2B = 1 - x1A, 1 - x2A
+        return -(self.utility_A(x1A, x2A) + self.utility_B(x1B, x2B))
+    
     
