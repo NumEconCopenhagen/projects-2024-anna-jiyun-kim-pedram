@@ -131,16 +131,19 @@ class MarketModel():
     def market_clearing_condition(self, p1):
         #Calculate the excess demand (or excess supply). Since the total quantity supplied is 1, 1 is subtracted from the total demand 
         return self.demand_A1(p1) + self.demand_B1(p1) - 1
+    
     #Question 4a, define demand of good two for person A
     def demand_A2(self, p1):
         u = (1-self.par.alpha) * (p1 * self.par.w1A + self.par.p2 * self.par.w2A) / p1
         return u
+    
     def q4a(self):
-        P101 = 0.5 + 2* np.arange(self.N)/self.N
+        P1 = np.arange(0.5, 2.6, 2 / self.par.N1)
         #Optimization loop
+
         max_utility = -np.inf
         optimal_p1 = None
-        for p1 in P101:
+        for p1 in P1:
             #calculate demands for A at this price
             x1A = self.demand_A1(self, p1)
             x2A = self.demand_A2(self, p1)
