@@ -135,20 +135,22 @@ class MarketModel():
     def demand_A2(self, p1):
         u = (1-self.par.alpha) * (p1 * self.par.w1A + self.par.p2 * self.par.w2A) / p1
         return u
-    #Create the price grid P1(P101) in question 4
-    P101 = 0.5 + 2* np.arange(self.N)/self.N
-    #Optimization loop
-    max_utility = -np.inf
-    optimal_p1 = None
-    for p1 in P101:
-        #calculate demands for A at this price
-        x1A = demand_A1(self, p1)
-        x2A = demand_A2(self, p1)
+    def q4a(self):
+        P101 = 0.5 + 2* np.arange(self.N)/self.N
+        #Optimization loop
+        max_utility = -np.inf
+        optimal_p1 = None
+        for p1 in P101:
+            #calculate demands for A at this price
+            x1A = demand_A1(self, p1)
+            x2A = demand_A2(self, p1)
 
-        # Calculate utility for A at this price
-        current_utility = utility_A(x1A, x2A)
-        # Update maximum utility and optimal price if current utility is higher
-        if current_utility > max_utility:
-            max_utility = current_utility
-            optimal_p1 = p1
-            return optimal_p1, max_utility
+            # Calculate utility for A at this price
+            current_utility = utility_A(x1A, x2A)
+            # Update maximum utility and optimal price if current utility is higher
+            if current_utility > max_utility:
+                max_utility = current_utility
+                optimal_p1 = p1
+                print("Optimal price p1 in P1:", optimal_p1)
+                print("Maximum utility for A:", max_utility)
+    
