@@ -136,7 +136,7 @@ class MarketModel():
         u = (1-self.par.alpha) * (p1 * self.par.w1A + self.par.p2 * self.par.w2A) / p1
         return u
     #Create the price grid P1(P101) in question 4
-    P101 = 0.5 + 2* np.arange(N)/self.N
+    P101 = 0.5 + 2* np.arange(self.N)/self.N
     #Optimization loop
     max_utility = -np.inf
     optimal_p1 = None
