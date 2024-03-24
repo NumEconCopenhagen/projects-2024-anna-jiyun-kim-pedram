@@ -189,16 +189,29 @@ class MarketModel():
     
     #Question 6b
     #Set up the figure
-    def plot_edgeworth6b(self):
+    def edgeworth6b(self):
+        
+        #Initial guess and results for 6a to be stored for use in 6b
+        x0 = [0.5, 0.5]
+        bounds = [(0,1), (0,1)]
+
+        result = minimize(self.objective6a, x0, bounds=bounds)
+
+        #Results
+        x1A_opt, x2A_opt = result.x
+        
         plt.figure(figsize=(6, 6))
         plt.title('Edgeworth Box for Optimal Allocations')
 
         # Draw the box
         plt.plot([0, 1], [0, 1], 'k--')  # Diagonal
-        x1A_opt = self.objective6a.x[2:]
-        x2A_opt = self.objective6a.x[:2]
-        x1B_opt = 1-self.objective6a.x[2:]
-        x2B_opt = 1-self.objective6a.x[:2]
+        
+        
+
+        x1A_opt = result.x[2:]
+        x2A_opt = result.x[:2]
+        x1B_opt = 1-x1A_opt
+        x2B_opt = 1-x1B_opt
 
         # Plot A's allocation
         plt.plot(x1A_opt, x2A_opt, 'bo', markersize=10, label='Optimal A')
