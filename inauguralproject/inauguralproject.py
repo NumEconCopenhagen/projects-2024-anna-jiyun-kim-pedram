@@ -183,9 +183,10 @@ class MarketModel():
     
     #Question 6a
     def objective6a(self, X):
-        x1A, x2A = X
+        x1A = np.random.uniform()
+        x2A = np.random.uniform()
         x1B, x2B = 1 - x1A, 1 - x2A
-        return -(self.utility_A(x1A, x2A) + self.utility_B(x1B, x2B))
+        return -(self.utility_A(x1A, x2A) + self.utility_B(1-x1A, 1-x2A))
     
     #Question 6b
     #Set up the figure
