@@ -21,10 +21,16 @@ def keep_regs(df, regs):
 
 #define the table for HFUD11 below 
 
-def HFUD11_data():
-    ind = DstApi('HFUDD11')
 
-   
+
+def HFUD11_data():
+    #Load the data from Statistik Banken
+    ind = DstApi('HFUDD11') 
+
+    #Set the language to english
+    tabsum = ind.tablesummary(language='en')
+
+
     # The _define_base_params -method gives us a nice template (selects all available data)
     params = ind._define_base_params(language='en')
     params
@@ -56,7 +62,7 @@ def HFUD11_data():
 
 
     #e. rename the columns
-    ind_api = ind_api.rename(columns = {'INDHOLD':'population w. BA', 'BOPOMR': 'municipality', "ALDER":"age", "KØN": "gender", "TID" :"year"})
+    ind_api = ind_api.rename(columns = {'INDHOLD':'BA', 'BOPOMR': 'municipality', "ALDER":"age", "KØN": "gender", "TID" :"year"})
 
     # f. drop non-municipality
     for val in ['Region', 'All']: 
@@ -70,52 +76,58 @@ def HFUD11_data():
     del ind_api["gender"]
     return ind_api
 
-#define the table for INDKP106
 
-def dkp_data():
-    dkp = DstApi('INDKP106')
 
-    tabsum = dkp.tablesummary(language='en')
+
+
+#Define the table for FOD407
+
+def FOD407_data():
+    fert = DstApi("FOD407")
+
+    #Set the language to english
+    tabsum = fert.tablesummary(language='en')
 
     # The _define_base_params -method gives us a nice template (selects all available data)
-    params = dkp._define_base_params(language='en')
+    params = fert._define_base_params(language='en')
+    params  
 
-    variables = params['variables'] # Returns a view, that we can edit
-    #We are only looking at people from Copenhagen, Thisted and Aalborg and choosing average wage in dkk
+    variables = params["variables"]
+    #We are only looking at people from Copenhagen, Thisted and Aalborg
     variables[0]["values"] = ["101","787", "851"]
-    variables[1]['values'] = ["118"]
-    #We are looking at all ages and genders
-    variables[2]['values'] =["MOK"]
-    variables[3]["values"] = ["00"]
-    #We are looking at all income intervals and years 2008-2022
-    variables[4]['values'] = ["000"]
-    variables[5]['values']= ['2008','2009','2010','2011','2012','2013','2014','2015','2016','2017','2018','2019','2020','2021','2022']
-
+    #We are looking at total fertility rate
+    variables[1]["values"] = ["TOT1"]
+    #We are looking across all time, therefore we don't write anything to time. 
     params
 
-    dkp_api = dkp.get_data(params=params)
-    dkp_api.head(5)
 
-    dkp_api.sort_values(by=["OMRÅDE", 'ENHED', "KOEN", 'ALDER1',"INDKINTB", "TID", "INDHOLD"], inplace=True)
-    dkp_api.head(5)
+    #Use the variables set above
+    fert_api = fert.get_data(params=params)
 
-    #change names
-    dkp_api = dkp_api.rename(columns = {"OMRÅDE":"municipality", "ENHED":"Avg. in DKK", "KOEN":"Gender", "ALDER1":"age", "INDKINTB":"Income Interval", "TID":"year", "INDHOLD":"AVG. Income"})
+    #Sort values for BOPOMR, HFDD, KØN and TID
+    fert_api.sort_values(by=['OMRÅDE', 'ALDER', "TID"], inplace=True)
+    fert_api.head(5)
 
-    # e. drop non-municipalities
+    #Drop the coloumns "ALDER"
+    for v in ['ALDER']: 
+            del fert_api[v]
+
+
+    #e. rename the columns
+    fert_api = fert_api.rename(columns = {'OMRÅDE':'municipality', 'TID': 'year', "INDHOLD":"fertilitykvotient"})
+
+
+    # f. drop non-municipality
     for val in ['Region', 'All']: 
-        I = dkp_api['municipality'].str.contains(val)
-        dkp_api.drop(dkp_api[I].index, inplace=True)
+            I = fert_api['municipality'].str.contains(val)
+            fert_api.drop(fert_api[I].index, inplace=True)
 
-    # f. convert to date
-    dkp_api['date'] = pd.PeriodIndex(dkp_api.year,freq='Q').to_timestamp() # Convert to datetime
-    del dkp_api['date']
-    del dkp_api['Avg. in DKK']
-    del dkp_api['Income Interval']
-    del dkp_api['age']
-    del dkp_api['Gender']
-    
-    return dkp_api
+    fert_api['fertilitykvotient'] = pd.to_numeric(fert_api['fertilitykvotient'], errors='coerce')
+
+
+    return fert_api
+
+
 #Function for plotting populations with bachelors degree
 def plot_ba_pop(ind_api):
     # Data frame with Copenhagen
@@ -144,7 +156,101 @@ def plot_ba_pop(ind_api):
 
 
 
+#Function for plotting fertility and BA in copenhagen
+def plot_fer_BA_copenhagen(ind_api, fert_api):
+    # Create a figure and axis object
+    fig, ax1 = plt.subplots(figsize=(10, 6))
+
+    # Plot each DataFrame. Specify the ax parameter to ensure all plots are on the same axes.
+    BA_copenhagen = ind_api.loc[ind_api['municipality'] == 'Aalborg', :]
+    fertility_copenhagen = fert_api.loc[fert_api['municipality'] == 'Aalborg', :]
+
+    #First for Aalborg
+
+    # Plot the data about population with a BA on the first y-axis
+    color = 'tab:blue'
+    ax1.set_xlabel('Year')
+    ax1.set_ylabel('Population with a BA', color=color)
+    BA_copenhagen.plot(x='year', y='BA', ax=ax1, label='Population with a BA', color=color)
+    ax1.tick_params(axis='y', labelcolor=color)
+
+    # Create a second y-axis that shares the same x-axis
+    ax2 = ax1.twinx()
+
+    # Plot the data about fertility on the second y-axis
+    color = 'tab:red'
+    ax2.set_ylabel('Fertility kvotient', color=color)
+    fertility_copenhagen.plot(x='year', y='fertilitykvotient', ax=ax2, label='Fertility kvotient', color=color)
+    ax2.tick_params(axis='y', labelcolor=color)
+
+    # Add title and legend
+    fig.tight_layout()  # To ensure the right y-label is not clipped
+    ax1.set_title("Fertility and education in Aalborg")
+
+    #Display
+    plt.show()
 
 
+def plot_fer_BA_aalborg(ind_api, fert_api):
+     # Create a figure and axis object
+    fig, ax1 = plt.subplots(figsize=(10, 6))
 
+    # Plot each DataFrame. Specify the ax parameter to ensure all plots are on the same axes.
+    BA_aalborg = ind_api.loc[ind_api['municipality'] == 'Aalborg', :]
+    fertility_aalborg = fert_api.loc[fert_api['municipality'] == 'Aalborg', :]
+
+    #First for Aalborg
+
+    # Plot the data about population with a BA on the first y-axis
+    color = 'tab:blue'
+    ax1.set_xlabel('Year')
+    ax1.set_ylabel('Population with a BA', color=color)
+    BA_aalborg.plot(x='year', y='BA', ax=ax1, label='Population with a BA', color=color)
+    ax1.tick_params(axis='y', labelcolor=color)
+
+    # Create a second y-axis that shares the same x-axis
+    ax2 = ax1.twinx()
+
+    # Plot the data about fertility on the second y-axis
+    color = 'tab:red'
+    ax2.set_ylabel('Fertility kvotient', color=color)
+    fertility_aalborg.plot(x='year', y='fertilitykvotient', ax=ax2, label='Fertility kvotient', color=color)
+    ax2.tick_params(axis='y', labelcolor=color)
+
+    # Add title and legend
+    fig.tight_layout()  # To ensure the right y-label is not clipped
+    ax1.set_title("Fertility and education in Aalborg")
+
+    plt.show()
+
+
+def plot_fer_BA_thisted(ind_api, fert_api):
+    # Create a figure and axis object
+    fig, ax1 = plt.subplots(figsize=(10, 6))
+
+    BA_thisted = ind_api.loc[ind_api['municipality'] == 'Thisted', :]
+    fertility_thisted = fert_api.loc[fert_api['municipality'] == 'Thisted', :]
+
+
+    # Plot the data about population with a BA on the first y-axis
+    color = 'tab:blue'
+    ax1.set_xlabel('Year')
+    ax1.set_ylabel('Population with a BA', color=color)
+    BA_thisted.plot(x='year', y='BA', ax=ax1, label='Population with a BA', color=color)
+    ax1.tick_params(axis='y', labelcolor=color)
+
+    # Create a second y-axis that shares the same x-axis
+    ax2 = ax1.twinx()
+
+    # Plot the data about fertility on the second y-axis
+    color = 'tab:red'
+    ax2.set_ylabel('Fertility kvotient', color=color)
+    fertility_thisted.plot(x='year', y='fertilitykvotient', ax=ax2, label='Fertility kvotient', color=color)
+    ax2.tick_params(axis='y', labelcolor=color)
+
+    # Add title and legend
+    fig.tight_layout()  # To ensure the right y-label is not clipped
+    ax1.set_title("Fertility and education in Thisted")
+
+    plt.show()
 
