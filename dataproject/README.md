@@ -20,3 +20,4 @@ To-Do list for us:
 * Make a graph of people with a BA and average income
 * Compare women with high education to the fertility rate
 * If possible, compare higher education and fertility rates of Denmark with South Korea and/or Japan, Italy (due to historically low fertility)
+* Arguably, should we be focusing on a specific agegroup and newly educated people since we are looking at fertility rates?
