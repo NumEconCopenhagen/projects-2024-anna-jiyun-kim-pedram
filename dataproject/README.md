@@ -18,4 +18,5 @@ To-Do list for us:
 * Make a count for total population
 * Make a var = total pop in copenhagen / people with a BA in copenhagen (for all 3 cities)
 * Make a graph of people with a BA and average income
-* 
+* Compare women with high education to the fertility rate
+* If possible, compare higher education and fertility rates of Denmark with South Korea and/or Japan, Italy (due to historically low fertility)
