@@ -279,20 +279,22 @@ educ_c.rename(columns = {'TIME_PERIOD':'Years'}, inplace=True)
 educ_c.rename(columns = {'OBS_VALUE':'% tertiary educ.'}, inplace=True)
 
 
+
+
 #Importing fertility data from the World Bank
 fert = pd.read_csv('Fert_Data.csv')
-# These columns have to go: 'Country Name' 'Time Code', and bottom rows should be deleted
 
+# These columns have to go: 'Country Name' 'Time Code', and bottom rows should be deleted
 drop_these = (['Country Name'] + ['Time Code']) 
+
 fert.drop(range(374, fert.shape[0]), inplace=True) # drop rows starting from index 374 and on
 
 fert.drop(drop_these, axis=1, inplace=True)
 
 #Changing Time to an integer
 fert['Time'] = fert['Time'].astype(int)
-#Changing Names of columns
 
+#Changing Names of columns
 fert.rename(columns = {'Country Code':'Country'}, inplace=True)
 fert.rename(columns = {'Time':'Years'}, inplace=True)
 fert.rename(columns = {'Fertility rate, total (births per woman) [SP.DYN.TFRT.IN]':'Fertility'}, inplace=True)
-
