@@ -298,3 +298,7 @@ fert['Time'] = fert['Time'].astype(int)
 fert.rename(columns = {'Country Code':'Country'}, inplace=True)
 fert.rename(columns = {'Time':'Years'}, inplace=True)
 fert.rename(columns = {'Fertility rate, total (births per woman) [SP.DYN.TFRT.IN]':'Fertility'}, inplace=True)
+
+
+
+
