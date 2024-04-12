@@ -254,50 +254,57 @@ def plot_fer_BA_thisted(ind_api, fert_api):
 
     plt.show()
 
-#Data for education levels
-#Rename the country codes so they match that of the World Bank Data
-country_mapping = {
-    "BE": "BEL", "BG": "BGR", "HR": "HRV", "CY": "CYP", "DK": "DNK", "CZ": "CZE", "EE": "EST", "FR": "FRA", "FI": "FIN",
-    "DE": "DEU", "EL": "GRC", "HU": "HUN", "IE": "IRL", "IT": "ITA", "IS": "ISL", "LV": "LVA", "LT": "LTU", "LU": "LUX",
-    "MK": "MKD", "NL": "NLD", "MT": "MLT", "ME": "MNE", "NO": "NOR", "PL": "POL", "PT": "PRT", "AT": "AUT", "RO": "ROU",
-    "SK": "SVK", "RS": "SRB", "SI": "SVN", "SE": "SWE", "ES": "ESP", "CH": "CHE", "GB": "GBR"
-}
-#Read the data from the CSV file and replace the 'geo' labels with the newly named ones
-
-educ = pd.read_csv('sdg_04_20_page_linear.csv')
-educ['geo'] = educ['geo'].replace(country_mapping)
-
-# columns to remove (columns 1-7 and column 11) since they are not needed
-c_remove = list(educ.columns[0:7]) + [educ.columns[10]]
-
-# Drop the specified columns from the DataFrame
-educ_c = educ.drop(columns=c_remove)
-
-#renaming columns to something more suitable
-educ_c.rename(columns = {'geo':'Country'}, inplace=True)
-educ_c.rename(columns = {'TIME_PERIOD':'Years'}, inplace=True)
-educ_c.rename(columns = {'OBS_VALUE':'% tertiary educ.'}, inplace=True)
 
 
+#Importing data for education levels from the CSV with data from eurostat
+def educ_c():
+    #Rename the country codes so they match that of the World Bank Data
+    country_mapping = {
+        "BE": "BEL", "BG": "BGR", "HR": "HRV", "CY": "CYP", "DK": "DNK", "CZ": "CZE", "EE": "EST", "FR": "FRA", "FI": "FIN",
+        "DE": "DEU", "EL": "GRC", "HU": "HUN", "IE": "IRL", "IT": "ITA", "IS": "ISL", "LV": "LVA", "LT": "LTU", "LU": "LUX",
+        "MK": "MKD", "NL": "NLD", "MT": "MLT", "ME": "MNE", "NO": "NOR", "PL": "POL", "PT": "PRT", "AT": "AUT", "RO": "ROU",
+        "SK": "SVK", "RS": "SRB", "SI": "SVN", "SE": "SWE", "ES": "ESP", "CH": "CHE", "GB": "GBR"
+    }
+    #Read the data from the CSV file and replace the 'geo' labels with the newly named ones
+
+    educ = pd.read_csv('sdg_04_20_page_linear.csv')
+    educ['geo'] = educ['geo'].replace(country_mapping)
+
+    # columns to remove (columns 1-7 and column 11) since they are not needed
+    c_remove = list(educ.columns[0:7]) + [educ.columns[10]]
+
+    # Drop the specified columns from the DataFrame
+    educ_c = educ.drop(columns=c_remove)
+
+    #renaming columns to something more suitable
+    educ_c.rename(columns = {'geo':'Country'}, inplace=True)
+    educ_c.rename(columns = {'TIME_PERIOD':'Years'}, inplace=True)
+    educ_c.rename(columns = {'OBS_VALUE':'% tertiary educ.'}, inplace=True)
+    return educ_c
 
 
-#Importing fertility data from the World Bank
-fert = pd.read_csv('Fert_Data.csv')
 
-# These columns have to go: 'Country Name' 'Time Code', and bottom rows should be deleted
-drop_these = (['Country Name'] + ['Time Code']) 
 
-fert.drop(range(374, fert.shape[0]), inplace=True) # drop rows starting from index 374 and on
+#Importing fertility data from the CSV with data from the World Bank Indicators
+def fert():
 
-fert.drop(drop_these, axis=1, inplace=True)
+    fert = pd.read_csv('Fert_Data.csv')
 
-#Changing Time to an integer
-fert['Time'] = fert['Time'].astype(int)
+    # These columns have to go: 'Country Name' 'Time Code', and bottom rows should be deleted
+    drop_these = (['Country Name'] + ['Time Code']) 
 
-#Changing Names of columns
-fert.rename(columns = {'Country Code':'Country'}, inplace=True)
-fert.rename(columns = {'Time':'Years'}, inplace=True)
-fert.rename(columns = {'Fertility rate, total (births per woman) [SP.DYN.TFRT.IN]':'Fertility'}, inplace=True)
+    fert.drop(range(374, fert.shape[0]), inplace=True) # drop rows starting from index 374 and on
+
+    fert.drop(drop_these, axis=1, inplace=True)
+
+    #Changing Time to an integer
+    fert['Time'] = fert['Time'].astype(int)
+
+    #Changing Names of columns
+    fert.rename(columns = {'Country Code':'Country'}, inplace=True)
+    fert.rename(columns = {'Time':'Years'}, inplace=True)
+    fert.rename(columns = {'Fertility rate, total (births per woman) [SP.DYN.TFRT.IN]':'Fertility'}, inplace=True)
+    return fert
 
 
 
