@@ -308,4 +308,51 @@ def fert():
 
 
 
+#Graph across countries
+def plot_fertility_education_country(educ_sorted, fert_sorted, country_codes):
+    fig, ax = plt.subplots(figsize=(10, 6))
+
+    # Set colors for plotting
+    educ_colors = ['tab:blue', 'tab:red', 'tab:green']
+    fert_colors = ['tab:blue', 'tab:red', 'tab:green']
+
+    ax2 = ax.twinx()  # Create a secondary y-axis that shares the same x-axis with ax
+
+    for i, country_code in enumerate(country_codes):
+        educ_country = educ_sorted.loc[educ_sorted['Country'] == country_code]
+        fertility_country = fert_sorted.loc[fert_sorted['Country'] == country_code]
+
+        # Plot the data for education for each country
+        color_educ = educ_colors[i]
+        educ_label = 'Pop. w. tertiary educ. - ' + country_code
+        educ_country.plot(x='Years', y='% tertiary educ.', ax=ax, label=educ_label, color=color_educ, linestyle='--')
+        
+        # Plot the data for fertility for each country
+        color_fert = fert_colors[i]
+        fert_label = 'Fertility - ' + country_code
+        fertility_country.plot(x='Years', y='Fertility', ax=ax2, label=fert_label, color=color_fert)
+        # Remove the legends inside the plot
+        ax.get_legend().remove()
+        ax2.get_legend().remove()
+
+    # Set y-axis limits, ticks and label for population axis
+    ax.set_ylim(20, 50)
+    ax.set_yticks(range(20, 50, 5))
+    ax.set_ylabel('% population age 25-34 with tertiary educ.', color='black')
+
+    # Set y-axis limits, ticks and label for fertility axis
+    ax2.set_ylim(1, 2)  # Adjust y-axis limits for fertility data
+    ax2.set_yticks([1, 1.5, 2])  # Set custom y-axis ticks for fertility data
+    ax2.set_ylabel('Fertility', color='black')
+
+    # Add title
+    fig.tight_layout()
+    plt.title("Fertility and education in selected countries")
+
+    fig.legend(loc='lower center', bbox_to_anchor=(0.5, -0.1), shadow=True, ncol=3)
+
+   
+    plt.show()
+
+
 
