@@ -19,9 +19,8 @@ def keep_regs(df, regs):
     return df
 
 
+
 #define the table for HFUD11 below 
-
-
 
 def HFUD11_data():
     #Load the data from Statistik Banken
@@ -165,8 +164,6 @@ def plot_fer_BA_copenhagen(ind_api, fert_api):
     BA_copenhagen = ind_api.loc[ind_api['municipality'] == 'Aalborg', :]
     fertility_copenhagen = fert_api.loc[fert_api['municipality'] == 'Aalborg', :]
 
-    #First for Aalborg
-
     # Plot the data about population with a BA on the first y-axis
     color = 'tab:blue'
     ax1.set_xlabel('Year')
@@ -190,7 +187,7 @@ def plot_fer_BA_copenhagen(ind_api, fert_api):
     #Display
     plt.show()
 
-
+#Function for plotting fertility and BA in Aalborg
 def plot_fer_BA_aalborg(ind_api, fert_api):
      # Create a figure and axis object
     fig, ax1 = plt.subplots(figsize=(10, 6))
@@ -223,6 +220,9 @@ def plot_fer_BA_aalborg(ind_api, fert_api):
 
     plt.show()
 
+
+
+#Function for plotting fertility and BA in Thisted
 
 def plot_fer_BA_thisted(ind_api, fert_api):
     # Create a figure and axis object
