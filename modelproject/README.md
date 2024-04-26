@@ -6,5 +6,7 @@ The **results** of the project can be seen from running [modelproject.ipynb](mod
 
 **Dependencies:** Apart from a standard Anaconda Python 3 installation, the project requires no further packages.
 
-
-test
+**Group members:**
+- Jiyun Kim
+- Pedram Nick Yazdanfard
+- Anna Svenningsen
