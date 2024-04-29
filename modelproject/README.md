@@ -1,6 +1,7 @@
 # Model analysis project
 
-Our project is titled **PROJECT TITLE** and is about EXPLAIN.
+Our project is titled **Tractable models of nominal frictions with pre-set prices* and is about .
+
 
 The **results** of the project can be seen from running [modelproject.ipynb](modelproject.ipynb).
 
