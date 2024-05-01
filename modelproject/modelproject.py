@@ -2,6 +2,7 @@ from scipy import optimize
 import numpy as np
 import sympy as sm
 import matplotlib.pyplot as plt
+from types import SimpleNamespace
 
 
 def solve_ss(alpha, c):
@@ -63,80 +64,79 @@ jacob_q_R = sm.lambdify(args=(q, q_R), expr = bestR_diff_R)
 
 
 # Calculating the best response of each firm for optimization
-def h(q, c_vec, b, N):
+def h(q, c_vec, N, b, m):
     y = np.zeros(N)
     for i in range(N):
 
-        y[i] = bestR(q[i], sum(q) - q[i], c_vec[i], b)
+        y[i] = bestR(q[i], sum(q) - q[i], c_vec[i], b, m)
     return y
 
 
 # Optimizing the jacobian
-def hp(x, b, N):
+def hp(q, N):
     y = np.zeros((N, N))
     for i in range(N):
         for j in range(N):
             if j == i:
-                # Diagonal of the Jacobian Matrix
-                y[i,j] = jac_x_self(x[i], sum(x) - x[i])
+                y[i, j] = jacob_q_i(q[i], sum(q)-q[i])
             else:
-                # Off-Diagonal of the Jacobian Matrix
-                y[i,j] = jac_x_rest(x[i], sum(x) - x[i], b)
+                y[i, j] = jacob_q_R(q[i], sum(q)-q[i])
     return y
 
 # using scipy.optimize.root to solve and find the market equilibrium
-def solve_model(N=50, b=1, seed=2000, draw_from_distribution=True, constant_value=9999, display=True):
+def solve_model(N=50, seed=2000, draw_from_distribution=True, constant_value=9999, display=True):
 
     N_init = N
 
     # if/else statement to draw from log normal distribution
     if draw_from_distribution:
         np.random.seed(seed)
-        c_vec = 0.01 * np.random.lognormal(mean=0, sigma=1, size=N)
+        c_vec = np.random.lognormal(mean=0, sigma=1, size=N)
     else:
         c_vec = np.full((N,), constant_value)
 
     c_vec_init = c_vec.copy()
 
-    # Setting up the initial values for x
+    # Setting up the initial values for q
     index = np.array(range(N))
-    x0 = np.zeros(N)
-    x_nonneg = np.zeros(N, dtype=bool)
+    q0 = np.zeros(N)
+    q_nonneg = np.zeros(N, dtype=bool)
 
-    while not all(x_nonneg):
+    while not all(q_nonneg):
 
         # Solving the optimization problem using scipy.optimize.root() function
-        result = optimize.root(lambda x0: h(x0, c_vec, b, N), x0, jac=lambda x0: hp(x0, b, N))
-
-        x0 = result.x
-        x_nonneg = (x0 >= 0).astype(bool)
+        result = optimize.root(lambda q0: h(q0, c_vec, N, b, m), q0, jac=lambda q0: hp(q0, N))
+        q0 = result.q
+        q_nonneg = (q0 >= 0).astype(bool)
         
-        c_vec = c_vec[x_nonneg]
-        x0    = x0[x_nonneg]
-        N     = np.sum(x_nonneg)
-        index = index[x_nonneg]
+        c_vec = c_vec[q_nonneg]
+        q0    = q0[q_nonneg]
+        N     = np.sum(q_nonneg)
+        index = index[q_nonneg]
 
-    profit=objective_lambd(result.x, np.sum(result.x)-result.x, c_vec, b)
+    profit=objec_l(result.q, np.sum(result.q)-result.q, c_vec)
 
     # Printing the results
     if display == True:
         print(result)
-        print('\nx =', result.x[0:5], '\nh(x) =', h(x0,c_vec,b,N)[0:5], '\nsum(x) =', sum(result.x), '\nmarginal cost=',c_vec[0:5],'\nprofit=', profit[0:5],'\nb= ',b,'\nN_firms =',N)
-
+        
     for i in range(N_init):
         if i in index:
             continue
         else:
-            x0=np.insert(x0,i,0)
+            q0=np.insert(q0,i,0)
             profit=np.insert(profit,i,0)
 
     sol = SimpleNamespace()
     sol.c_vec_init=c_vec_init
     sol.c_vec=c_vec
-    sol.x0=x0
+    sol.q0=q0
     sol.index=index
     sol.N=N
     sol.N_init=N_init
     sol.profit=profit
 
     return sol
+
+
+
