@@ -119,7 +119,8 @@ def solve_model(N=50, seed=2000, draw_from_distribution=True, constant_value=999
     # Printing the results
     if display == True:
         print(result)
-        
+        print('\nq =', result.q[0:5], '\nh(q) =', h(q0,c_vec,N)[0:5], '\nsum(q) =', sum(result.q), '\nmarginal cost=',c_vec[0:5],'\nprofit=', profit[0:5],'\nN_firms =',N)
+
     for i in range(N_init):
         if i in index:
             continue
