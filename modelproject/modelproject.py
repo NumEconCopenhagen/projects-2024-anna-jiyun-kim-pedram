@@ -39,7 +39,7 @@ m = sm.symbols("m") #Parameter for the slope of the price function
 b = sm.symbols("b") # Intercept of the price function
 
 # Define price function
-price_function = sm.Eq(p, m * (x + x_R) + b)
+price_function = sm.Eq(p, m*(x+x_R) + b)
 
 # Define profit function
 profit_function = p * x - c * x
@@ -64,8 +64,8 @@ best_response = sm.lambdify((x, x_R, c, b, m), objective_diff)
 best_response_diff_i = sm.diff(objective_diff, x)
 best_response_diff_R = sm.diff(objective_diff, x_R)
 
-jacobian_x_i = sm.lambdify((x, x_R, c, b, m), best_response_diff_i)
-jacobian_x_R = sm.lambdify((x, x_R, c, b, m), best_response_diff_R)
+jacobian_x_i = sm.lambdify(args=(x, x_R, m), expr=best_response_diff_i)
+jacobian_x_R = sm.lambdify(args=(x, x_R, m), expr=best_response_diff_R)
 
 
 # Defining the function to be optimized
@@ -78,16 +78,16 @@ def h(x, c_vec, b, m, N):
 
 
 # Defining the Jacobian of the function to be optimized
-def hp(x, b, m, N):
+def hp(x, m, N):
     y = np.zeros((N, N))
     for i in range(N):
         for j in range(N):
             if j == i:
                 # Diagonal of the Jacobian Matrix
-                y[i,j] = jacobian_x_i(x[i], sum(x) - x[i], b, m)
+                y[i,j] = jacobian_x_i(x[i], sum(x) - x[i], m)
             else:
                 # Off-Diagonal of the Jacobian Matrix
-                y[i,j] = jacobian_x_R(x[i], sum(x) - x[i], b, m)
+                y[i,j] = jacobian_x_R(x[i], sum(x) - x[i], m)
     return y
 
 # Algoritm for solving market equilibrium
@@ -112,7 +112,7 @@ def solve_model(N=50, b=10, m=2, seed=2000, draw_from_distribution=True, constan
     while not all(x_nonneg):
 
         # Solving the optimization problem using scipy.optimize.root() function
-        result = optimize.root(lambda x0: h(x0, c_vec, b, m, N), x0, jac=lambda x0: hp(x0, b, m, N))
+        result = optimize.root(lambda x0: h(x0, c_vec, b, m, N), x0, jac=lambda x0: hp(x0, m, N))
 
         x0 = result.x
         x_nonneg = (x0 >= 0).astype(bool)
