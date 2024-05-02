@@ -72,7 +72,7 @@ equilibrium_solution = sm.solve(equilibrium_condition, q)
 # Create lambdified functions
 equilibrium_func = sm.lambdify((q_R, c, b, m), equilibrium_solution)
 
-def market_eq_model(q_R_values, c_value, b_value, m_value):
+def modelE(q_R_values, c_value, b_value, m_value):
     equilibrium_q_i = equilibrium_func(q_R_values, c_value, b_value, m_value)
     return equilibrium_q_i
 
