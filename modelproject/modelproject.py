@@ -44,6 +44,7 @@ price_function = sm.Eq(p, m*(x+x_R) + b)
 # Define profit function
 profit_function = p * x - c * x
 
+
 # Solve for price function
 p_eq = sm.solve(price_function, p)
 
@@ -91,14 +92,14 @@ def hp(x, m, N):
     return y
 
 # Algoritm for solving market equilibrium
-def solve_model(N=50, b=10, m=2, seed=2000, draw_from_distribution=True, constant_value=9999, display=True):
+def solve_model(N=150, b=10, m=1, seed=1000, draw_from_distribution=True, constant_value=1000, display=True):
 
     N_init = N
 
     # if/else statement to draw from log normal distribution
     if draw_from_distribution:
         np.random.seed(seed)
-        c_vec = 0.01 * np.random.lognormal(mean=0, sigma=1, size=N)
+        c_vec = np.random.normal(loc=0, scale=1, size=N)
     else:
         c_vec = np.full((N,), constant_value)
 
