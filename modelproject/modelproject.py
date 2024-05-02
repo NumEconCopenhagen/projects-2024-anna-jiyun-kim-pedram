@@ -28,6 +28,8 @@ def solve_ss(alpha, c):
     
     return result
 
+
+
 #Define variables used in the model simulation
 p = sm.symbols("p") #Price
 q = sm.symbols("q") #Output of firm i
@@ -61,18 +63,7 @@ best_response = sm.lambdify((q, q_R, c, b, m), objective_diff)
 best_response_diff_i = sm.diff(objective_diff, q)
 best_response_diff_R = sm.diff(objective_diff, q_R)
 
-jacobian_q_i = sm.lambdify((q, q_R), best_response_diff_i)
-jacobian_q_R = sm.lambdify((q, q_R), best_response_diff_R)
+jacobian_q_i = sm.lambdify((q, q_R, c, b, m), best_response_diff_i)
+jacobian_q_R = sm.lambdify((q, q_R, c, b, m), best_response_diff_R)
 
-equilibrium_condition = best_response - (q + q_R)
-
-# Solving for equilibrium quantities
-equilibrium_solution = sm.solve(equilibrium_condition, q)
-
-# Create lambdified functions
-equilibrium_func = sm.lambdify((q_R, c, b, m), equilibrium_solution)
-
-def modelE(q_R_values, c_value, b_value, m_value):
-    equilibrium_q_i = equilibrium_func(q_R_values, c_value, b_value, m_value)
-    return equilibrium_q_i
 
