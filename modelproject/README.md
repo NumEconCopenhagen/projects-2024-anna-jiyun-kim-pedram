@@ -1,6 +1,6 @@
 # Model analysis project
 
-Our project is titled **Tractable models of nominal frictions with pre-set prices* and is about .
+Our project is titled *Cournot competetion and the expansion of firms in the economy* and looks into an equilibrium in Cournot competition, and the effects of expanding a linear model by including more firms and increasing competition.
 
 
 The **results** of the project can be seen from running [modelproject.ipynb](modelproject.ipynb).
