@@ -1,310 +1,144 @@
+from types import SimpleNamespace
+import numpy as np
+
+
+#Question 1
+
 class MarketModel():
-    def __init__(self, N = 75):
 
-        self.par = SimpleNamespace()
+    def __init__(self):
 
-        # a. set preferences
-        self.par.alpha = 1/3
-        self.par.beta = 2/3
+        par = self.par = SimpleNamespace()
 
-        # b. define endowments knowing that; w1A + w1B = w1 and w2A + w2B = w2
-        self.par.w1A = 0.8
-        self.par.w2A = 0.3
-        self.par.w1B = 1 - self.par.w1A
-        self.par.w2B = 1 - self.par.w2A
-        self.par.w1 = self.par.w1A + self.par.w1B
-        self.par.w2 = self.par.w2A + self.par.w2B
-        #endowments for question 8
-        self.par.w1A_uniform = np.random.uniform(size=N)
-        self.par.w2A_uniform = np.random.uniform(size=N)
-        self.par.w1B_uniform = 1 - self.par.w1A_uniform
-        self.par.w2B_uniform = 1 - self.par.w2A_uniform
+        # set preferences
+        par.alpha = 1/3
+        par.beta = 2/3
+
+        # define endowments
+        par.w1A = 0.8
+        par.w2A = 0.3
+
+        par.w1B = 1 - par.w1A
+        par.w2B = 1 - par.w2A
+
+        par.w1 = par.w1A + par.w1B
+        par.w2 = par.w2A + par.w2B
+
+
+    #Utility for A
+    def utility_A(self, x1A, x2A):
+        par = self.par
+        return (x1A**par.alpha) * (x2A**(1-par.alpha))
+
+    #Utility for B
+    def utility_B(par, x1B, x2B):
+        par = self.par
+        return (x1B**par.beta) * (x2B**(1-par.beta))
+
+    #Demand for A
+    def demand_A(self, p1, p2):
+        par = self.par
+        
+        #Set p2 as numeria
+        p2 = 1
+
+        #A's demand function
+        x1A = par.alpha*((p1*par.w1A + p2*par.w2A)/p1)
+        x2A = (1 - par.alpha)*((p1*par.w1A + p2*par.w2A)/p2) 
+
+        #Returnig the demand
+        return x1A, x2A
+
+    #Demand for B
+    def demand_B(self, p1, p2):
+
+        par = self.par
 
         #Set p2 as numeria
-        self.par.p2 = 1
+        p2 = 1
 
-        #Used to define the number of points along each axis, for which the model evaluates potential pareto improvements.
-        self.N = N
-        #Initial values for question 2
-        self.par.N1 = 10
-        self.par.N2 = 5
+        #B's demand function
+        x1B = par.beta*((p1*par.w1B + p2*par.w2B)/p1)
+        x2B = (1 - par.beta)*((p1*par.w1B + p2*par.w2B)/p2) 
 
-    #Define the utility for A
-    def utility_A(self, x1, x2):
-        u = x1**self.par.alpha * x2**(1-self.par.alpha)
-        return u
+        #Returning the demand
+        return x1B, x2B
+    
+    #Condition for x1A and x2A
+    def constraints(self, x):
+        x1A, x2A = x
+        x1B = 1 - x1A
+        x2B = 1 - x2A
+        return [
+            self.utility_A([x1A, x2A]) - self.utility_A([self.par.w1A, self.par.w2A]),
+            self.utility_B([x1B, x2B]) - self.utility_B([self.par.w1B, self.par.w2B])]
+    
+    def neg_u_A_p1(self, p1):
+        x1A, x2A = self.demand_A(p1, 1)
+        return -self.utility_A(x1A, x2A)
 
-    #Define the utility for B
-    def utility_B(self, x1, x2):
-        u =  x1**self.par.beta * x2**(1-self.par.beta)
-        return u
+    def objective(x):
+        x1A, x2A = x
+        return -model.utility_A(x1A, x2A)  # Pass arguments unpacked
 
-    #Define A's demand
-    def demand_A(self, p1, p2):
-        x1 = self.par.alpha * (p1 * self.par.w1A + p2 * self.par.w2A) / p1
-        x2 = (1 - self.par.alpha) * (p1 * self.par.w1A + p2 * self.par.w2A) / p2
-        return x1, x2
+    ################################## Question 2 #############################################
 
-    #Define B's demand
-    def demand_B(self, p1, p2):
-        x1 = self.par.beta * (p1 * self.par.w1B + p2 * self.par.w2B) / p1
-        x2 = (1 - self.par.beta) * (p1 * self.par.w1B + p2 * self.par.w2B) / p2
-        return x1, x2
-
-    #Check market clearing conditions.
-    def check_market_clearing(self,p1):
-
-            x1A,x2A = self.demand_A(p1)
-            x1B,x2B = self.demand_B(p1)
-
-            eps1 = x1A-par.w1A + x1B-(1-par.w1A)
-            eps2 = x2A-par.w2A + x2B-(1-par.w2A)
-
-            return eps1,eps2
-
-    #Define the pareto improvements
-    def find_pareto_improvements(self):
-        #Initialize an empty list to store the Pareto improvements found
-        pareto_improvement_set = [] 
-        #Iterates over the grid points within the ranges [0, self.par.w1] and [0,self.par.w2]
-        for x1 in np.linspace(0, self.par.w1, self.N + 1):
-            for x2 in np.linspace(0, self.par.w2, self.N + 1):
-                # For each combination of x1 and x2 in the grid, the utility or A and B are calculated
-                A_utility = self.utility_A(x1, x2)
-                B_utility = self.utility_B(self.par.w1 - x1, self.par.w2 - x2)
-                #Checks if the combination of (x1, x2) represents a Pareto improvement
-                if A_utility >= self.utility_A(self.par.w1A, self.par.w2A) and B_utility >= self.utility_B(self.par.w1B, self.par.w2B):
-                    #If the combination of x1 and x2  gives a pareto improvement, x1 and x2 are added to the empty list. 
-                    pareto_improvement_set.append((x1, x2))
-        return pareto_improvement_set
-
-    #Plotting the edgeworth box
-    def plot_edgeworth_box(self):
-        #Call the list with pareto improvements
-        pareto_improvement_set = self.find_pareto_improvements()
-        #Takes the x-coordinates (x_A1_pareto) from the list and the y-coordinates (x_2A_pareto). If there are no pareto improvements, it assigns an empty list. 
-        x_A1_pareto, x_A2_pareto = zip(*pareto_improvement_set) if pareto_improvement_set else ([], [])
-        #Creating a scatter using matplotlib.pyplot.scatter() with the x- and y-coordinates from above. 
-        fig, ax = plt.subplots()
-        ax.scatter(x_A1_pareto, x_A2_pareto, color='green', label='Pareto Improvements')
-
-        #Set the labels
-        ax.set_xlabel('Good x1')
-        ax.set_ylabel('Good x2')
-        ax.set_title('Edgeworth Box')
-        ax.legend()
-        plt.show()
-
-         # Calculate errors for different values of p1 for question 2
+   # Calculate errors for different values of p1
     def calculate_errors(self):
+        
+        par = self.par 
+
+        par.N = 75
+        par.p2 = 1
+
+
         #p1 ranges from 0.5 to 2.5 in the steps determined by 2/N
-        P1 = np.arange(0.5, 2.6, 2 / self.par.N1)
+        p1_values = [(0.5 + 2 * i / 75) for i in range(76)]
+
         #Create an empty list
         errors = []
 
         #Iterate over each value of p1 where p2 is numeraire
-        for p1 in P1:
-            x1A, x2A = self.demand_A(p1, self.par.p2)
-            x1B, x2B = self.demand_B(p1, self.par.p2)    
+        for p1 in p1_values:
+            x1A, x2A = self.demand_A(p1,par.p2)
+            x1B, x2B = self.demand_B(p1, par.p2)    
             
     
             #Calculates the errors for both goods for each value in the pricevector. 
-            error_1 = x1A + x1B - (self.par.w1A + self.par.w1B)
-            error_2 = x2A + x2B - (self.par.w2A + self.par.w2B)
+            error_1 = x1A + x1B - (par.w1A + par.w1B)
+            error_2 = x2A + x2B - (par.w2A + par.w2B)
     
             #Creates a tupple 
             errors.append((error_1, error_2))
 
         # Print errors for each p1
-        for i, p_1 in enumerate(P1):
-            print(f"For p1 = {p_1:.2f}, Error: ε(p, ω) = ({errors[i][0]:.4f}, {errors[i][1]:.4f})")
-            #Determine whether the market for good 1 is in equilibrium at a given price p1
+        return p1_values, errors
+
+
+
+
+################################# Question 3 ####################################
+   
+   
+
+
+
+
+
+    #Check market clearing conditions.
+    def check_market_clearing(self,p1):
+        par = self.par
+
+        x1A,x2A = self.demand_A(p1)
+        x1B,x2B = self.demand_B(p1)
+
+        eps1 = x1A - par.w1A + x1B - par.w1B
+        eps2 = x2A - par.w2A + x2B - par.w2B
+
+            #Return the distance
+        return np.sqrt(eps1**2 + eps2**2)
     
-    #Demand of good 1 for A and B to solve question 3
-    def demand_A1(self, p1):
-        u = self.par.alpha * (p1 * self.par.w1A + self.par.p2 * self.par.w2A) / p1
-        return u
-    def demand_B1(self, p1):
-        u = self.par.beta * (p1 * self.par.w1B + self.par.p2 * self.par.w2B) / p1
-        return u
     def market_clearing_condition(self, p1):
         #Calculate the excess demand (or excess supply). Since the total quantity supplied is 1, 1 is subtracted from the total demand 
-        return self.demand_A1(p1) + self.demand_B1(p1) - 1
+        return self.demand_A(p1) + self.demand_B(p1) - 1
     
-    #Question 5a
-    # Constraint
-    def constraint5a(self, x):
-        x1_A, x2_A, x1_B, x2_B = x
-        return self.utility_B(x1_B, x2_B) - self.utility_B(self.par.w1B, self.par.w2B)
-
-    # obj. func. to maximize utility of A
-    def objective5a(self, x):
-        x1_A, x2_A, _, _ = x
-        return -self.utility_A(x1_A, x2_A)
-
-    # Allocation where A chooses B's consumption
-    def find_alloc5a(self):
-        # Initial guess for A
-        x0 = [self.par.w1A, self.par.w2A, self.par.w1B, self.par.w2B]
-        # constraint
-        constraints = [{'type': 'ineq', 'fun': self.constraint5a}]
-        # bounds
-        bounds = [(0, 1), (0, 1), (0, 1), (0, 1)]
-        # constraint for x1 and x2
-        constraint_A = {'type': 'ineq', 'fun': lambda x: 1 - x[0] - x[2]}
-        constraint_B = {'type': 'ineq', 'fun': lambda x: 1 - x[1] - x[3]}
-        # Max utility of A
-        result = minimize(self.objective5a, x0, constraints=constraints + [constraint_A, constraint_B], bounds=bounds)
-        return result.x
-    
-    #Question 5b
-    # Constraint
-    def constraint5b(self, x):
-        x1_A, x2_A = x
-        return self.utility_B(1 - x1_A, 1 - x2_A) - self.utility_B(self.par.w1B, self.par.w2B)
-
-    # obj. func. to maximize utility of A
-    def objective5b(self, X):
-        x1_A, x2_A = X
-        return -self.utility_A(x1_A, x2_A)
-
-    # Alloc. of A within bounds
-    def find_alloc5b(self):
-        # Initial guess
-        x0 = [0.5, 0.5]
-        # constraint
-        constraints = [{'type': 'ineq', 'fun': self.constraint5b}]
-        # bounds
-        bounds = [(0,1), (0,1)]
-        # maximize utility of A
-        result = minimize(self.objective5b,x0,constraints=constraints,bounds=bounds)
-        return result.x
-    
-    #Question 6a
-    def objective6a(self, X):
-        x1A = np.random.uniform()
-        x2A = np.random.uniform()
-        x1B, x2B = 1 - x1A, 1 - x2A
-        return -(self.utility_A(x1A, x2A) + self.utility_B(1-x1A, 1-x2A))
-    
-    #Question 6b
-    #Set up the figure
-    def edgeworth6b(self):
-        
-        #Results from 6a
-        #Initial guess and results for 6a to be stored for use in 6b
-        x0 = [0.5, 0.5]
-        bounds = [(0,1), (0,1)]
-
-        result = minimize(self.objective6a, x0, bounds=bounds)
-    
-        x1A_opt, x2A_opt = result.x
-        x1A_opt = result.x[:1]
-        x2A_opt = result.x[1:]
-        x1B_opt = 1-x1A_opt
-        x2B_opt = 1-x1B_opt
-
-
-
-
-
-
-        plt.figure(figsize=(6, 6))
-        plt.title('Edgeworth Box for Optimal Allocations')
-
-        # Draw the box
-        plt.plot([0, 1], [0, 1], 'k--')  # Diagonal
-        
-        
-
-    
-
-        # Plot A's allocation
-        plt.plot(x1A_opt, x2A_opt, 'bo', markersize=10, label='Optimal A')
-
-        # Plot B's allocation (which is 1 - A's allocation for both goods)
-        plt.plot(x1B_opt, x2B_opt, 'ro', markersize=10, label='Optimal B')
-
-        # Add some labels and a legend
-        plt.xlabel('Good 1')
-        plt.ylabel('Good 2')
-        plt.xlim(0, 1)
-        plt.ylim(0, 1)
-        plt.axhline(0.5, color='grey', linestyle='--')
-        plt.axvline(0.5, color='grey', linestyle='--')
-        plt.grid(True)
-        plt.legend()
-        plt.show
-    
-    #Question 7
-    
-    def set7(self):
-        #Draw a set with 50 elements from a uniform distribution
-        print('set seed to 1987 and create numbers:')
-        np.random.seed(1987)
-
-        W_1_A_uniform = np.random.uniform(size=50)
-        W_1_B_uniform = 1- W_1_A_uniform
-
-
-
-        # Combine the generated values to create the set W
-        W = list(zip(W_1_A_uniform, W_1_B_uniform))
-
-        # Display the set W
-        print("Set W:")
-        for i, (w1A, w2A) in enumerate(W, start=1):
-            print(f"Element {i}: ({w1A:.4f}, {w2A:.4f})")
-    
-    #Question 8, new endowments and new utilities and demands
-
-    #Define utility for A
-    def utility_A8(self, x1, x2):
-        u = x1**self.par.alpha * x2**(1-self.par.alpha)
-        return u
-
-    # Define the utility for B
-    def utility_B8(self, x1, x2):
-        u =  x1**self.par.beta * x2**(1-self.par.beta)
-        return u
-    
-    # Define A's demand
-    def demand_A8(self, p1, p2):
-        x1 = self.par.alpha * (p1 * self.par.w1A_uniform + p2 * self.par.w2A_uniform) / p1
-        x2 = (1 - self.par.alpha) * (p1 * self.par.w1A_uniform + p2 * self.par.w2A_uniform) / p2
-        return x1, x2
-
-    # Define B's demand
-    def demand_B8(self, p1, p2):
-        x1 = self.par.beta * (p1 * self.par.w1B_uniform + p2 * self.par.w2B_uniform) / p1
-        x2 = (1 - self.par.beta) * (p1 * self.par.w1B_uniform + p2 * self.par.w2B_uniform) / p2
-        return x1, x2
-    # Check market clearing conditions.
-    def excess_demand(self, p1):
-        x1A, _ = self.demand_A8(p1, self.par.p2)
-        x1B, _ = self.demand_B8(p1, self.par.p2)
-        excess_demand_1 = np.sum(x1A + x1B - (self.par.w1A_uniform + self.par.w1B_uniform))
-        return excess_demand_1
-
-    def find_equilibrium_price(self):
-        result = minimize_scalar(self.excess_demand, bounds=(0, 10), method='bounded')
-        if result.success:
-            return result.x
-        else:
-            raise ValueError('Equilibrium price not found.')
-
-    # Plotting the edgeworth box
-    def plot_edgeworth_box(self):
-        p1_eq = self.find_equilibrium_price()
-        x1A_eq, x2A_eq = self.demand_A8(p1_eq, self.par.p2)
-
-        fig, ax = plt.subplots()
-        # Plot equilibrium allocations
-        ax.plot(x1A_eq, x2A_eq, 'o', color='green', label='Equilibrium A')
-
-        # Set the labels
-        ax.set_xlabel('Good 1')
-        ax.set_ylabel('Good 2')
-        ax.set_title('Edgeworth Box')
-        ax.legend()
-        plt.show()
