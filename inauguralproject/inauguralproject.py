@@ -27,12 +27,12 @@ class MarketModel():
 
     #Utility for A
     def utility_A(self, x1A, x2A):
-        par = self.par
+        par = self.par 
         return (x1A**par.alpha) * (x2A**(1-par.alpha))
 
     #Utility for B
-    def utility_B(par, x1B, x2B):
-        par = self.par
+    def utility_B(self, x1B, x2B):
+        par = self.par 
         return (x1B**par.beta) * (x2B**(1-par.beta))
 
     #Demand for A
@@ -73,15 +73,11 @@ class MarketModel():
             self.utility_A([x1A, x2A]) - self.utility_A([self.par.w1A, self.par.w2A]),
             self.utility_B([x1B, x2B]) - self.utility_B([self.par.w1B, self.par.w2B])]
     
-    def neg_u_A_p1(self, p1):
-        x1A, x2A = self.demand_A(p1, 1)
-        return -self.utility_A(x1A, x2A)
 
-    def objective(x):
-        x1A, x2A = x
-        return -model.utility_A(x1A, x2A)  # Pass arguments unpacked
 
-    ################################## Question 2 #############################################
+
+
+     ################################## Question 2 #############################################
 
    # Calculate errors for different values of p1
     def calculate_errors(self):
@@ -117,12 +113,7 @@ class MarketModel():
 
 
 
-################################# Question 3 ####################################
-   
-   
-
-
-
+    ################################# Question 3 ####################################
 
 
     #Check market clearing conditions.
@@ -142,3 +133,29 @@ class MarketModel():
         #Calculate the excess demand (or excess supply). Since the total quantity supplied is 1, 1 is subtracted from the total demand 
         return self.demand_A(p1) + self.demand_B(p1) - 1
     
+
+    ######################### Question 4 #############################
+
+
+    
+
+    ################### Question 5 ########################
+
+    def objective_5(x):
+        x1A, x2A = x
+        return -self.utility_A(x1A, x2A)  # Pass arguments unpacked
+    
+
+
+    ######### Question 6 ########################
+    def constraints(self,x):
+        x1A, x2A = x
+        x1B = 1 - x1A
+        x2B = 1 - x2A
+        return self.utility_B(x1B, x2B) - self.utility_B(self.par.w1B, self.par.w2B)
+    
+    def aggregate_utility(self, x):
+        x1A, x2A = x
+        x1B = 1 - x1A
+        x2B = 1 - x2A
+        return self.utility_A(x1A, x2A) + self.utility_B(x1B, x2B)
