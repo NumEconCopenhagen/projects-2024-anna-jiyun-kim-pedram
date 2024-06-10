@@ -36,21 +36,21 @@ class MarketModel():
         return (x1B**par.beta) * (x2B**(1-par.beta))
 
     #Demand for A
-    def demand_A(self, p1, p2):
+    def demand_A(self, p1, p2, w1A, w2A):
         par = self.par
         
         #Set p2 as numeria
         p2 = 1
 
         #A's demand function
-        x1A = par.alpha*((p1*par.w1A + p2*par.w2A)/p1)
+        x1A = par.alpha*((p1* par.w1A + p2* par.w2A)/p1)
         x2A = (1 - par.alpha)*((p1*par.w1A + p2*par.w2A)/p2) 
 
         #Returnig the demand
         return x1A, x2A
 
     #Demand for B
-    def demand_B(self, p1, p2):
+    def demand_B(self, p1, p2, w1A, w2A):
 
         par = self.par
 
@@ -161,3 +161,7 @@ class MarketModel():
         x1B = 1 - x1A
         x2B = 1 - x2A
         return self.utility_A(x1A, x2A) + self.utility_B(x1B, x2B)
+    
+
+
+    ################# Question 8 #####################
