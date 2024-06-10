@@ -113,7 +113,7 @@ def FOD407_data():
 
 
     #e. rename the columns
-    fert_api = fert_api.rename(columns = {'OMRÅDE':'municipality', 'TID': 'year', "INDHOLD":"fertilitykvotient"})
+    fert_api = fert_api.rename(columns = {'OMRÅDE':'municipality', 'TID': 'year', "INDHOLD":"fertilityquotient"})
 
 
     # f. drop non-municipality¬
@@ -121,7 +121,7 @@ def FOD407_data():
             I = fert_api['municipality'].str.contains(val)
             fert_api.drop(fert_api[I].index, inplace=True)
 
-    fert_api['fertilitykvotient'] = pd.to_numeric(fert_api['fertilitykvotient'], errors='coerce')
+    fert_api['fertilityquotient'] = pd.to_numeric(fert_api['fertilityquotient'], errors='coerce')
 
 
     return fert_api
@@ -236,8 +236,8 @@ def plot_fer_HE_copenhagen(ind_api, fert_api):
 
     # Plot the data about fertility on the second y-axis
     color = 'tab:red'
-    ax2.set_ylabel('Fertility kvotient', color=color)
-    fertility_copenhagen.plot(x='year', y='fertilitykvotient', ax=ax2, label='Fertility kvotient', color=color)
+    ax2.set_ylabel('Fertility quotient', color=color)
+    fertility_copenhagen.plot(x='year', y='fertilityquotient', ax=ax2, label='Fertility quotient', color=color)
     ax2.tick_params(axis='y', labelcolor=color)
 
     # Add title and legend
@@ -270,8 +270,8 @@ def plot_fer_HE_aalborg(ind_api, fert_api):
 
     # Plot the data about fertility on the second y-axis
     color = 'tab:red'
-    ax2.set_ylabel('Fertility kvotient', color=color)
-    fertility_aalborg.plot(x='year', y='fertilitykvotient', ax=ax2, label='Fertility kvotient', color=color)
+    ax2.set_ylabel('Fertility quotient', color=color)
+    fertility_aalborg.plot(x='year', y='fertilityquotient', ax=ax2, label='Fertility quotient', color=color)
     ax2.tick_params(axis='y', labelcolor=color)
 
     # Add title and legend
@@ -304,8 +304,8 @@ def plot_fer_HE_thisted(ind_api, fert_api):
 
     # Plot the data about fertility on the second y-axis
     color = 'tab:red'
-    ax2.set_ylabel('Fertility kvotient', color=color)
-    fertility_thisted.plot(x='year', y='fertilitykvotient', ax=ax2, label='Fertility kvotient', color=color)
+    ax2.set_ylabel('Fertility quotient', color=color)
+    fertility_thisted.plot(x='year', y='fertilityquotient', ax=ax2, label='Fertility quotient', color=color)
     ax2.tick_params(axis='y', labelcolor=color)
 
     # Add title and legend
@@ -337,8 +337,8 @@ def plot_fer_BA(municipality, ind_api, fert_api):
 
     # Plot the data about fertility on the second y-axis
     color = 'tab:red'
-    ax2.set_ylabel('Fertility kvotient', color=color)
-    fertility_data.plot(x='year', y='fertilitykvotient', ax=ax2, label='Fertility kvotient', color=color, marker='x')
+    ax2.set_ylabel('Fertility quotient', color=color)
+    fertility_data.plot(x='year', y='fertilityquotient', ax=ax2, label='Fertility quotient', color=color, marker='x')
     ax2.tick_params(axis='y', labelcolor=color)
 
     # Add title and possibly a legend
