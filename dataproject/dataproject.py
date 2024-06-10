@@ -40,7 +40,7 @@ def HFUD11_data():
     #We are looking at people across all "Herkomst"
     variables[1]["values"] = ["TOT"]
     #We are looking at, how many people have a bachelor degree
-    variables[2]['values'] =['H60']
+    variables[2]['values'] =['H70']
     #We don't look at people with a specific age. But only at Age,total. 
     variables[3]["values"] = ["TOT"]
     #We are only looking at people with the gender male and female
@@ -61,7 +61,7 @@ def HFUD11_data():
 
 
     #e. rename the columns
-    ind_api = ind_api.rename(columns = {'INDHOLD':'BA', 'BOPOMR': 'municipality', "ALDER":"age", "KØN": "gender", "TID" :"year"})
+    ind_api = ind_api.rename(columns = {'INDHOLD':'highereducation', 'BOPOMR': 'municipality', "ALDER":"age", "KØN": "gender", "TID" :"year"})
 
     # f. drop non-municipality
     for val in ['Region', 'All']: 
@@ -190,19 +190,19 @@ def population_data():
 #Function for plotting populations with bachelors degree
 def plot_ba_pop(ind_api):
     # Data frame with Copenhagen
-    BA_copenhagen = ind_api.loc[ind_api['municipality'] == 'Copenhagen', :]
+    HE_copenhagen = ind_api.loc[ind_api['municipality'] == 'Copenhagen', :]
     # Data frame with Thisted
-    BA_thisted = ind_api.loc[ind_api['municipality'] == 'Thisted', :]
+    HE_thisted = ind_api.loc[ind_api['municipality'] == 'Thisted', :]
     # Data frame with Aalborg
-    BA_aalborg = ind_api.loc[ind_api['municipality'] == 'Aalborg', :]
+    HE_aalborg = ind_api.loc[ind_api['municipality'] == 'Aalborg', :]
 
     # Create a figure and axis object
     fig, ax = plt.subplots(figsize=(10, 6))
 
     # Plot each DataFrame. Specify the ax parameter to ensure all plots are on the same axes.
-    BA_copenhagen['population w. BA'].plot(ax=ax, label='Copenhagen')
-    BA_thisted['population w. BA'].plot(ax=ax, label='Thisted')
-    BA_aalborg['population w. BA'].plot(ax=ax, label='Aalborg')
+    HE_copenhagen['population w. HE'].plot(ax=ax, label='Copenhagen')
+    HE_thisted['population w. HE'].plot(ax=ax, label='Thisted')
+    HE_aalborg['population w. HE'].plot(ax=ax, label='Aalborg')
 
     # Add some plot details
     ax.set_xlabel('Year')
@@ -216,19 +216,19 @@ def plot_ba_pop(ind_api):
 
 
 #Function for plotting fertility and BA in copenhagen
-def plot_fer_BA_copenhagen(ind_api, fert_api):
+def plot_fer_HE_copenhagen(ind_api, fert_api):
     # Create a figure and axis object
     fig, ax1 = plt.subplots(figsize=(10, 6))
 
     # Plot each DataFrame. Specify the ax parameter to ensure all plots are on the same axes.
-    BA_copenhagen = ind_api.loc[ind_api['municipality'] == 'Copenhagen', :]
+    HE_copenhagen = ind_api.loc[ind_api['municipality'] == 'Copenhagen', :]
     fertility_copenhagen = fert_api.loc[fert_api['municipality'] == 'Copenhagen', :]
 
-    # Plot the data about population with a BA on the first y-axis
+    # Plot the data about population with a HE on the first y-axis
     color = 'tab:blue'
     ax1.set_xlabel('Year')
-    ax1.set_ylabel('Population with a BA', color=color)
-    BA_copenhagen.plot(x='year', y='BA', ax=ax1, label='Population with a BA', color=color)
+    ax1.set_ylabel('Population with a HE', color=color)
+    HE_copenhagen.plot(x='year', y='highereducation', ax=ax1, label='Population with a HE', color=color)
     ax1.tick_params(axis='y', labelcolor=color)
 
     # Create a second y-axis that shares the same x-axis
@@ -248,12 +248,12 @@ def plot_fer_BA_copenhagen(ind_api, fert_api):
     plt.show()
 
 #Function for plotting fertility and BA in Aalborg
-def plot_fer_BA_aalborg(ind_api, fert_api):
+def plot_fer_HE_aalborg(ind_api, fert_api):
      # Create a figure and axis object
     fig, ax1 = plt.subplots(figsize=(10, 6))
 
     # Plot each DataFrame. Specify the ax parameter to ensure all plots are on the same axes.
-    BA_aalborg = ind_api.loc[ind_api['municipality'] == 'Aalborg', :]
+    HE_aalborg = ind_api.loc[ind_api['municipality'] == 'Aalborg', :]
     fertility_aalborg = fert_api.loc[fert_api['municipality'] == 'Aalborg', :]
 
     #First for Aalborg
@@ -261,8 +261,8 @@ def plot_fer_BA_aalborg(ind_api, fert_api):
     # Plot the data about population with a BA on the first y-axis
     color = 'tab:blue'
     ax1.set_xlabel('Year')
-    ax1.set_ylabel('Population with a BA', color=color)
-    BA_aalborg.plot(x='year', y='BA', ax=ax1, label='Population with a BA', color=color)
+    ax1.set_ylabel('Population with a HE', color=color)
+    HE_aalborg.plot(x='year', y='highereducation', ax=ax1, label='Population with a HE', color=color)
     ax1.tick_params(axis='y', labelcolor=color)
 
     # Create a second y-axis that shares the same x-axis
@@ -284,19 +284,19 @@ def plot_fer_BA_aalborg(ind_api, fert_api):
 
 #Function for plotting fertility and BA in Thisted
 
-def plot_fer_BA_thisted(ind_api, fert_api):
+def plot_fer_HE_thisted(ind_api, fert_api):
     # Create a figure and axis object
     fig, ax1 = plt.subplots(figsize=(10, 6))
 
-    BA_thisted = ind_api.loc[ind_api['municipality'] == 'Thisted', :]
+    HE_thisted = ind_api.loc[ind_api['municipality'] == 'Thisted', :]
     fertility_thisted = fert_api.loc[fert_api['municipality'] == 'Thisted', :]
 
 
     # Plot the data about population with a BA on the first y-axis
     color = 'tab:blue'
     ax1.set_xlabel('Year')
-    ax1.set_ylabel('Population with a BA', color=color)
-    BA_thisted.plot(x='year', y='BA', ax=ax1, label='Population with a BA', color=color)
+    ax1.set_ylabel('Population with a HE', color=color)
+    HE_thisted.plot(x='year', y='highereducation', ax=ax1, label='Population with a HE', color=color)
     ax1.tick_params(axis='y', labelcolor=color)
 
     # Create a second y-axis that shares the same x-axis
