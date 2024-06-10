@@ -1,27 +1,10 @@
 import pandas as pd
 from dstapi import DstApi
 import matplotlib.pyplot as plt
-def keep_regs(df, regs):
-    """ Example function. Keep only the subset regs of regions in data.
-
-    Args:
-        df (pd.DataFrame): pandas dataframe 
-
-    Returns:
-        df (pd.DataFrame): pandas dataframe
-
-    """ 
-    
-    for r in regs:
-        I = df.reg.str.contains(r)
-        df = df.loc[I == False] # keep everything else
-    
-    return df
 
 
 
 #define the table for HFUD11 below 
-
 def HFUD11_data():
     #Load the data from Statistik Banken
     ind = DstApi('HFUDD11') 
@@ -39,7 +22,7 @@ def HFUD11_data():
     variables[0]["values"] = ["101","787", "851"]
     #We are looking at people across all "Herkomst"
     variables[1]["values"] = ["TOT"]
-    #We are looking at, how many people have a bachelor degree
+    #We are looking at, how many people have a higher education
     variables[2]['values'] =['H70']
     #We don't look at people with a specific age. But only at Age,total. 
     variables[3]["values"] = ["TOT"]
@@ -148,7 +131,7 @@ def population_data():
     variables[0]["values"] = ["101","787", "851"]
     #We are looking at people across all "Herkomst"
     variables[1]["values"] = ["TOT"]
-    #We are looking at, how many people have a bachelor degree
+    #We are looking at everyone, no matter the the education.
     variables[2]['values'] =['TOT']
     #We don't look at people with a specific age. But only at Age,total. 
     variables[3]["values"] = ["TOT"]
