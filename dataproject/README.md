@@ -1,6 +1,6 @@
 # Data analysis project
 
-Our project is titled "Why do we get fewer kids"  and aims to explore the potential correlation between education length and fertility.
+The projected, named "Why do we not want kids?", aims to explore the potential correlation between education length and fertility.
 
 The **results** of the project can be seen from running [dataproject.ipynb](dataproject.ipynb).
 
@@ -13,7 +13,7 @@ We apply the **following datasets**:
 
 **Dependencies:** Apart from a standard Anaconda Python 3 installation, the project requires the following installations:
 
-``pip install matplotlib-venn``
+
 ``pip install git+https://github.com/alemartinello/dstapi``
 ``pip install pandas-datareader``
 
