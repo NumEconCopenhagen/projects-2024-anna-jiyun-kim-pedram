@@ -143,7 +143,7 @@ class MarketModel():
 
     ################### Question 5 ########################
 
-    def objective_5(x):
+    def objective_5(self, x):
         x1A, x2A = x
         return -self.utility_A(x1A, x2A)  # Pass arguments unpacked
     
