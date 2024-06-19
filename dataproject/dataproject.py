@@ -334,15 +334,60 @@ def plot_fer_BA(municipality, ind_api, fert_api):
 
 
 
+#Total populations and defining urban areas
+
+def FOLK1AM_data():
+    
+    #Load the data from Statistik Banken
+    totpop = DstApi('FOLK1AM') 
+
+    #Set the language to english
+    tabsum = totpop.tablesummary(language='en')
+
+
+    # The _define_base_params -method gives us a nice template (selects all available data)
+    params = totpop._define_base_params(language='en')
+    params
+
+    variables = params['variables'] # Returns a view, that we can edit
+    #We are looking at all municipalities, why we dont write anything for the first variable
+    #We are looking at all genders"
+    variables[1]["values"] = ['TOT']
+    #We are looking at all ages.
+    variables[2]['values'] =['TOT']
+    #We are looking at data for the last month of years 2008-2023. 
+    variables[3]["values"] = ['2008M12', '2009M12', '2010M12', '2011M12', '2012M12', '2013M12', '2014M12', '2015M12', '2016M12', '2017M12', '2018M12', '2019M12', '2020M12', '2021M12', '2022M12', '2023M12']
+    
+    params
+
+    #Use the variables set above
+    totpop_api = totpop.get_data(params=params)
+
+    #Sort values for OMR, KØN, ALDER and TID
+    totpop_api.sort_values(by=['OMR', "KØN", "ALDER", "TID"], inplace=True)
+    totpop_api.head(5)
+ 
+    #rename the columns
+    totpop_api = totpop_api.rename(columns = {'INDHOLD':'totalpop', 'OMR': 'municipality', "KØN":"gender", "ALDER": "age", "TID" :"year"})
+
+    # f. drop non-municipality
+    for val in ['Region', 'All']: 
+        I = totpop_api['municipality'].str.contains(val)
+        totpop_api.drop(pop_api[I].index, inplace=True)
+
+
+    # f. convert to date
+    del totpop_api["age"]
+    del totpop_api["gender"]
+
+    return totpop_api
 
 
 
 
 
 
-
-
-
+## CSV IMPORT OF EUROSTAT DATA ##
 #Importing data for education levels from the CSV with data from eurostat
 def educ_c():
     #Rename the country codes so they match that of the World Bank Data
