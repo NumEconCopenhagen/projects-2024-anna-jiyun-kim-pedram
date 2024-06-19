@@ -334,12 +334,11 @@ def plot_fer_BA(municipality, ind_api, fert_api):
 
 
 
-#Total populations and defining urban areas
-
-def FOLK1AM_data():
+#Total populations to define urban areas
+def FOLK1A_data():
     
     #Load the data from Statistik Banken
-    totpop = DstApi('FOLK1AM') 
+    totpop = DstApi('FOLK1A') 
 
     #Set the language to english
     tabsum = totpop.tablesummary(language='en')
@@ -354,33 +353,147 @@ def FOLK1AM_data():
     #We are looking at all genders"
     variables[1]["values"] = ['TOT']
     #We are looking at all ages.
-    variables[2]['values'] =['TOT']
-    #We are looking at data for the last month of years 2008-2023. 
-    variables[3]["values"] = ['2008M12', '2009M12', '2010M12', '2011M12', '2012M12', '2013M12', '2014M12', '2015M12', '2016M12', '2017M12', '2018M12', '2019M12', '2020M12', '2021M12', '2022M12', '2023M12']
-    
+    variables[2]['values'] =['IALT']
+    #We are looking at all people regardless of marital status
+    variables[3]["values"] = ["TOT"]
+    #We are looking at data for the end of each quarter of years 2008-2023. 
+    variables[4]["values"] = ['2008K4', '2009K4', '2010K4', '2011K4', '2012K4', '2013K4', '2014K4', '2015K4', '2016K4', '2017K4', '2018K4', '2019K4', '2020K4', '2021K4', '2022K4', '2023K4']
+                              
     params
 
     #Use the variables set above
     totpop_api = totpop.get_data(params=params)
 
-    #Sort values for OMR, KØN, ALDER and TID
-    totpop_api.sort_values(by=['OMR', "KØN", "ALDER", "TID"], inplace=True)
+    #Sort values
+    totpop_api.sort_values(by=["OMRÅDE", "KØN", "ALDER", "CIVILSTAND", "TID"], inplace=True)
     totpop_api.head(5)
  
     #rename the columns
-    totpop_api = totpop_api.rename(columns = {'INDHOLD':'totalpop', 'OMR': 'municipality', "KØN":"gender", "ALDER": "age", "TID" :"year"})
+    totpop_api = totpop_api.rename(columns = {"INDHOLD":"totalpop", "OMRÅDE": "municipality", "KØN":"gender", "ALDER": "age", "CIVILSTAND":"all", "TID" :"year"})
 
-    # f. drop non-municipality
+    #drop columns for age, gender and marital status
+    totpop_api.drop(columns=['age', 'gender', 'all'], inplace=True)
+    #dropping quarters from the table such that 2008Q4 becomes 2008
+    totpop_api['year'] = totpop_api['year'].str.split('Q').str[0]
+
+    # Drop specific municipalities where fertility data does not exist
+    municipalities_to_drop = ['Ærø', 'Samsø', 'Fanø', 'Læsø', 'Christiansø']
+    totpop_api = totpop_api[~totpop_api['municipality'].isin(municipalities_to_drop)]
+    
+
+    # drop non-municipality
     for val in ['Region', 'All']: 
         I = totpop_api['municipality'].str.contains(val)
-        totpop_api.drop(pop_api[I].index, inplace=True)
-
-
-    # f. convert to date
-    del totpop_api["age"]
-    del totpop_api["gender"]
-
+        totpop_api.drop(totpop_api[I].index, inplace=True)
     return totpop_api
+
+
+#Find higher education levels for all municipalities, thus unfiltered municipalities of HFUD11:
+def high_data():
+    #Load the data from Statistik Banken
+    high = DstApi('HFUDD11') 
+
+    #Set the language to english
+    tabsum = high.tablesummary(language='en')
+
+
+    # The _define_base_params -method gives us a nice template (selects all available data)
+    params = high._define_base_params(language='en')
+    params
+
+    variables = params['variables'] # Returns a view, that we can edit
+    #We are only looking at all municipalities
+    #We are looking at people across all "Herkomst"
+    variables[1]["values"] = ["TOT"]
+    #We are looking at, how many people have a higher education
+    variables[2]['values'] =['H70']
+    #We don't look at people with a specific age. But only at Age,total. 
+    variables[3]["values"] = ["TOT"]
+    #We are only looking at people with the gender male and female
+    variables[4]['values'] = ["TOT"]
+    #We don't write anything for variables[5], and therefore, we are looking at people across all dates from 2008 to 2023.
+    params
+
+    #Use the variables set above
+    high_api = high.get_data(params=params)
+
+    #Sort values for BOPOMR, HFDD, KØN and TID
+    high_api.sort_values(by=['BOPOMR', 'HFUDD', "KØN", "TID"], inplace=True)
+    high_api.head(5)
+
+    #  drop the columns "HERKOMST"
+    for v in ['HERKOMST']: 
+        del high_api[v]
+
+
+    # rename the columns
+    high_api = high_api.rename(columns = {'INDHOLD':'highereducation', 'BOPOMR': 'municipality', "ALDER":"age", "KØN": "gender", "TID" :"year"})
+
+    # drop non-municipality
+    for val in ['Region', 'All']: 
+        I = high_api['municipality'].str.contains(val)
+        high_api.drop(high_api[I].index, inplace=True)
+
+    # Drop specific municipalities where fertility data does not exist
+    municipalities_to_drop = ['Ærø', 'Samsø', 'Fanø', 'Læsø', 'Christiansø']
+    high_api = high_api[~high_api['municipality'].isin(municipalities_to_drop)]
+
+    # convert to date
+    del high_api["age"]
+    del high_api["HFUDD"]
+    del high_api["gender"]
+    return high_api
+
+
+#Find fertility levels of all municipalities, thus unfiltered municipalities of FOD407:
+
+def fertil_data():
+    fertil = DstApi("FOD407")
+
+    #Set the language to english
+    tabsum = fertil.tablesummary(language='en')
+
+    # The _define_base_params -method gives us a nice template (selects all available data)
+    params = fertil._define_base_params(language='en')
+    params  
+
+    variables = params["variables"]
+    #We are looking at all municipalities
+    #We are looking at total fertility rate
+    variables[1]["values"] = ["TOT1"]
+    #We are looking at 2008-2023
+    variables[2]["values"] = ['2008', '2009', '2010', '2011', '2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023'] 
+    params
+
+
+    #Use the variables set above
+    fertil_api = fertil.get_data(params=params)
+
+    #Sort values for BOPOMR, HFDD, KØN and TID
+    fertil_api.sort_values(by=['OMRÅDE', 'ALDER', "TID"], inplace=True)
+    fertil_api.head(5)
+
+    #Drop the coloumns "ALDER"
+    for v in ['ALDER']: 
+            del fertil_api[v]
+
+
+    # rename the columns
+    fertil_api = fertil_api.rename(columns = {'OMRÅDE':'municipality', 'TID': 'year', "INDHOLD":"fertilityquotient"})
+
+
+    #  drop non-municipality¬
+    for val in ['Region', 'All']: 
+            I = fertil_api['municipality'].str.contains(val)
+            fertil_api.drop(fertil_api[I].index, inplace=True)
+
+    fertil_api['fertilityquotient'] = pd.to_numeric(fertil_api['fertilityquotient'], errors='coerce')
+
+    # Drop specific municipalities where fertility data does not exist
+    municipalities_to_drop = ['Ærø', 'Samsø', 'Fanø', 'Læsø', 'Christiansø']
+    fertil_api = fertil_api[~fertil_api['municipality'].isin(municipalities_to_drop)]
+
+    return fertil_api
 
 
 
