@@ -7,7 +7,8 @@ The **results** of the project can be seen from running [dataproject.ipynb](data
 We apply the **following datasets**:
 
 1. HFUDD11 from Statistikbanken
-2. INDKP106 from Statistikbanken
+2. FOD407 from Statistikbanken
+3. FOLK1A from Statistikbanken
 3. Fert_Data.csv from The World Bank Global Indicators for Fertility
 4. sdg_04_20_page_linear.csv from Eurostat on Tertiary education levels for EU countries
 
