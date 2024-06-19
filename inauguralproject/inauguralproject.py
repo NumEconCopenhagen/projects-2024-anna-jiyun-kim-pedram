@@ -1,6 +1,6 @@
 from types import SimpleNamespace
 import numpy as np
-
+from scipy.optimize import minimize
 
 #Question 1
 
@@ -165,3 +165,11 @@ class MarketModel():
 
 
     ################# Question 8 #####################
+    def objective_8(self, x):
+        x1A = x[0]
+        x2A = x[1]
+        return -(self.utility_A(x1A, x2A) + self.utility_B(1 - x1A, 1 - x2A))
+    def utility_A_8(self, x1A, x2A):
+        return x1A**self.par.alpha * x2A**(1 - self.par.alpha)
+    def utility_B_8(self, x1B, x2B):
+        return x1B**self.par.beta * x2B**(1 - self.par.beta)
