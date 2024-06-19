@@ -1,6 +1,7 @@
 import pandas as pd
 from dstapi import DstApi
 import matplotlib.pyplot as plt
+import seaborn as sns
 
 
 
@@ -554,7 +555,7 @@ def fert():
 
 
 #Graph across countries
-def plot_fertility_education_country(educ_sorted, fert_sorted, country_codes):
+def plot_fertility_education_country(educ_sorted, fert_sorted, country_codes, avgfertEU, avgeducEU):
     fig, ax = plt.subplots(figsize=(10, 6))
 
     # Set colors for plotting
@@ -579,6 +580,10 @@ def plot_fertility_education_country(educ_sorted, fert_sorted, country_codes):
         # Remove the legends inside the plot
         ax.get_legend().remove()
         ax2.get_legend().remove()
+    
+    #add average fertility and education level across EU
+    avgfertEU.plot(x='Years', y='Fertility', ax=ax2, label='Average fertility in EU', color='black')
+    avgeducEU.plot(x='Years', y='% tertiary educ.', ax=ax, label='Average education level in EU', color='black', linestyle='--')
 
     # Set y-axis limits, ticks and label for population axis
     ax.set_ylim(20, 50)
