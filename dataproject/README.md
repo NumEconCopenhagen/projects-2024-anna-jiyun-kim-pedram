@@ -24,5 +24,3 @@ We apply the **following datasets**:
 - Jiyun Kim
 - Pedram Nick Yazdanfard
 - Anna Svenningsen
-
-Note that datatest copy.ipynb is not part of the results, but merely a notebook containing more data on EU countries.

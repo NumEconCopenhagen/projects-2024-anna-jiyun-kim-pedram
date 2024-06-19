@@ -373,7 +373,7 @@ def FOLK1A_data():
 
     #drop columns for age, gender and marital status
     totpop_api.drop(columns=['age', 'gender', 'all'], inplace=True)
-    #dropping quarters from the table such that 2008Q4 becomes 2008
+    #dropping quarters from the table such that 2008Q4 shows as 2008
     totpop_api['year'] = totpop_api['year'].str.split('Q').str[0]
 
     # Drop specific municipalities where fertility data does not exist
