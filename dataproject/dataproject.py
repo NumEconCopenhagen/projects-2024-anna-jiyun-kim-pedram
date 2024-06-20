@@ -420,7 +420,13 @@ def educ_c():
     educ_c.rename(columns = {'geo':'Country'}, inplace=True)
     educ_c.rename(columns = {'TIME_PERIOD':'Years'}, inplace=True)
     educ_c.rename(columns = {'OBS_VALUE':'% tertiary educ.'}, inplace=True)
+
+    #convert to numeric
+    educ_c['% tertiary educ.'] = pd.to_numeric(educ_c['% tertiary educ.'], errors='coerce')
+
+
     return educ_c
+
 
 
 
@@ -446,6 +452,10 @@ def fert():
     fert.rename(columns = {'Fertility rate, total (births per woman) [SP.DYN.TFRT.IN]':'Fertility'}, inplace=True)
     #Alter fertility rate to births per 1000 people
     fert['Fertility'] = fert['Fertility']*1000
+
+    #convert to numeric
+    fert['Fertility'] = pd.to_numeric(fert['Fertility'], errors='coerce')
+
     return fert
 
 
@@ -497,4 +507,41 @@ def plot_fertility_education_country(educ_sorted, fert_sorted, country_codes, av
     plt.show()
 
 
+def plot_growth(y2y_educ, y2y_fert, country_codes, avg_growth_fert2, avg_growth_educ2):
+    fig, ax = plt.subplots(figsize=(10, 6))
 
+    # Set colors for plotting
+    educ_colors = ['tab:blue', 'tab:red', 'tab:green']
+    fert_colors = ['tab:blue', 'tab:red', 'tab:green']
+
+    ax2 = ax.twinx()  # Create a secondary y-axis that shares the same x-axis with ax
+    # loop through the country codes and plot the data for each country. This allows us to choose which countries to plot in the notebook
+    for i, country_code in enumerate(country_codes):
+        if country_code in y2y_educ.columns and country_code in y2y_fert.columns:
+            # Plot the data for education for each country
+            color_educ = educ_colors[i]
+            educ_label = 'Edu. Change - ' + country_code
+            y2y_educ[country_code].plot(ax=ax, label=educ_label, color=color_educ, linestyle='--')
+            
+            # Plot the data for fertility for each country
+            color_fert = fert_colors[i]
+            fert_label = 'Fert. Change - ' + country_code
+            y2y_fert[country_code].plot(ax=ax2, label=fert_label, color=color_fert)
+    
+    # Add average fertility and education level across EU
+    avg_growth_fert2.plot(y='% Change in Fertility', ax=ax2, label='Avg. Fert. Change', color='black')
+    avg_growth_educ2.plot(y='% Change in Tertiary Education', ax=ax, label='Avg. Edu. Change', color='black', linestyle='--')
+
+    # Set y-axis limits, ticks and label for population axis
+    ax.set_ylabel('% Change in Tertiary Education', color='black')
+
+    # Set y-axis limits, ticks and label for fertility axis
+    ax2.set_ylabel('% Change in Fertility', color='black')
+
+    # Add title
+    fig.tight_layout()
+    plt.title("Year-to-Year Changes in Fertility and Education in Selected Countries")
+    # Add legend outside the plot
+    fig.legend(loc='lower center', bbox_to_anchor=(0.5, -0.1), shadow=True, ncol=3)
+
+    plt.show()
