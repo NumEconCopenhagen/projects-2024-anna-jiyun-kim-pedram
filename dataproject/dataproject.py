@@ -51,14 +51,12 @@ def HFUD11_data():
     for val in ['Region', 'All']: 
         I = ind_api['municipality'].str.contains(val)
         ind_api.drop(ind_api[I].index, inplace=True)
-    # g. Drop specific municipalities where fertility data does not exist
-    municipalities_to_drop = ['Ærø', 'Samsø', 'Fanø', 'Læsø', 'Christiansø']
-    ind_api = ind_api[~ind_api['municipality'].isin(municipalities_to_drop)]
+    
 
-    # h. convert to numeric
+    # g. convert to numeric
     ind_api['highereducation'] = pd.to_numeric(ind_api['highereducation'], errors='coerce')
 
-    # i. convert to date
+    # h. convert to date
     del ind_api["age"]
     del ind_api["HFUDD"]
     del ind_api["gender"]
@@ -111,11 +109,9 @@ def FOD407_data():
             I = fert_api['municipality'].str.contains(val)
             fert_api.drop(fert_api[I].index, inplace=True)
 
-    # g. Drop specific municipalities where fertility data does not exist
-    municipalities_to_drop = ['Ærø', 'Samsø', 'Fanø', 'Læsø', 'Christiansø']
-    fert_api = fert_api[~fert_api['municipality'].isin(municipalities_to_drop)]
+    
 
-    # h. convert to numeric
+    # g. convert to numeric
     fert_api['fertilityquotient'] = pd.to_numeric(fert_api['fertilityquotient'], errors='coerce')
 
 
@@ -388,9 +384,6 @@ def FOLK1A_data():
     #dropping quarters from the table such that 2008Q4 shows as 2008
     totpop_api['year'] = totpop_api['year'].str.split('Q').str[0]
 
-    # Drop specific municipalities where fertility data does not exist
-    municipalities_to_drop = ['Ærø', 'Samsø', 'Fanø', 'Læsø', 'Christiansø']
-    totpop_api = totpop_api[~totpop_api['municipality'].isin(municipalities_to_drop)]
     
 
     # drop non-municipality
