@@ -7,7 +7,7 @@ import seaborn as sns
 
 #define the table for HFUD11 below 
 def HFUD11_data():
-    #Load the data from Statistik Banken
+    # a. Load the data from Statistik Banken
     ind = DstApi('HFUDD11') 
 
     #Set the language to english
@@ -19,8 +19,8 @@ def HFUD11_data():
     params
 
     variables = params['variables'] # Returns a view, that we can edit
-    #We are only looking at people from Copenhagen, Thisted and Aalborg
-    variables[0]["values"] = ["101","787", "851"]
+    # b. We are initially looking at all municipalities, why we don't write anything for the first variable
+    
     #We are looking at people across all "Herkomst"
     variables[1]["values"] = ["TOT"]
     #We are looking at, how many people have a higher education
@@ -35,7 +35,7 @@ def HFUD11_data():
     #Use the variables set above
     ind_api = ind.get_data(params=params)
 
-    #Sort values for BOPOMR, HFDD, KØN and TID
+    # c. Sort values for BOPOMR, HFDD, KØN and TID
     ind_api.sort_values(by=['BOPOMR', 'HFUDD', "KØN", "TID"], inplace=True)
     ind_api.head(5)
 
@@ -51,9 +51,14 @@ def HFUD11_data():
     for val in ['Region', 'All']: 
         I = ind_api['municipality'].str.contains(val)
         ind_api.drop(ind_api[I].index, inplace=True)
+    # g. Drop specific municipalities where fertility data does not exist
+    municipalities_to_drop = ['Ærø', 'Samsø', 'Fanø', 'Læsø', 'Christiansø']
+    ind_api = ind_api[~ind_api['municipality'].isin(municipalities_to_drop)]
 
+    # h. convert to numeric
+    ind_api['highereducation'] = pd.to_numeric(ind_api['highereducation'], errors='coerce')
 
-    # f. convert to date
+    # i. convert to date
     del ind_api["age"]
     del ind_api["HFUDD"]
     del ind_api["gender"]
@@ -66,6 +71,7 @@ def HFUD11_data():
 #Define the table for FOD407
 
 def FOD407_data():
+    # a. Load the data from Statistik Banken
     fert = DstApi("FOD407")
 
     #Set the language to english
@@ -76,8 +82,8 @@ def FOD407_data():
     params  
 
     variables = params["variables"]
-    #We are only looking at people from Copenhagen, Thisted and Aalborg
-    variables[0]["values"] = ["101","787", "851"]
+    # b. We are initially looking at all municipalities, why we dont write anything for the first variable
+    
     #We are looking at total fertility rate
     variables[1]["values"] = ["TOT1"]
     #We are looking across all time, therefore we don't write anything to time. 
@@ -87,11 +93,11 @@ def FOD407_data():
     #Use the variables set above
     fert_api = fert.get_data(params=params)
 
-    #Sort values for BOPOMR, HFDD, KØN and TID
+    # c. Sort values for BOPOMR, HFDD, KØN and TID
     fert_api.sort_values(by=['OMRÅDE', 'ALDER', "TID"], inplace=True)
     fert_api.head(5)
 
-    #Drop the coloumns "ALDER"
+    # d. Drop the coloumns "ALDER"
     for v in ['ALDER']: 
             del fert_api[v]
 
@@ -105,6 +111,11 @@ def FOD407_data():
             I = fert_api['municipality'].str.contains(val)
             fert_api.drop(fert_api[I].index, inplace=True)
 
+    # g. Drop specific municipalities where fertility data does not exist
+    municipalities_to_drop = ['Ærø', 'Samsø', 'Fanø', 'Læsø', 'Christiansø']
+    fert_api = fert_api[~fert_api['municipality'].isin(municipalities_to_drop)]
+
+    # h. convert to numeric
     fert_api['fertilityquotient'] = pd.to_numeric(fert_api['fertilityquotient'], errors='coerce')
 
 
