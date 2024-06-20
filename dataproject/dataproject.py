@@ -550,6 +550,8 @@ def fert():
     fert.rename(columns = {'Country Code':'Country'}, inplace=True)
     fert.rename(columns = {'Time':'Years'}, inplace=True)
     fert.rename(columns = {'Fertility rate, total (births per woman) [SP.DYN.TFRT.IN]':'Fertility'}, inplace=True)
+    #Alter fertility rate to births per 1000 people
+    fert['Fertility'] = fert['Fertility']*1000
     return fert
 
 
@@ -586,13 +588,9 @@ def plot_fertility_education_country(educ_sorted, fert_sorted, country_codes, av
     avgeducEU.plot(x='Years', y='% tertiary educ.', ax=ax, label='Average education level in EU', color='black', linestyle='--')
 
     # Set y-axis limits, ticks and label for population axis
-    ax.set_ylim(20, 50)
-    ax.set_yticks(range(20, 50, 5))
     ax.set_ylabel('% population age 25-34 with tertiary educ.', color='black')
 
     # Set y-axis limits, ticks and label for fertility axis
-    ax2.set_ylim(1, 2)  # Adjust y-axis limits for fertility data
-    ax2.set_yticks([1, 1.5, 2])  # Set custom y-axis ticks for fertility data
     ax2.set_ylabel('Fertility', color='black')
 
     # Add title
