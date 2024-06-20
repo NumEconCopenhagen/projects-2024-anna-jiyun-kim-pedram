@@ -2,8 +2,6 @@ from types import SimpleNamespace
 import numpy as np
 from scipy.optimize import minimize
 
-#Question 1
-
 class MarketModel():
 
     def __init__(self):
@@ -74,9 +72,6 @@ class MarketModel():
             self.utility_B([x1B, x2B]) - self.utility_B([self.par.w1B, self.par.w2B])]
     
 
-
-     ###################  Question 1 ##################
-
   
 
      ################################## Question 2 #############################################
@@ -122,17 +117,19 @@ class MarketModel():
     def check_market_clearing(self,p1):
         par = self.par
 
+        #Compute demands
         x1A,x2A = self.demand_A(p1)
         x1B,x2B = self.demand_B(p1)
 
+        #Calculate errors
         eps1 = x1A - par.w1A + x1B - par.w1B
         eps2 = x2A - par.w2A + x2B - par.w2B
 
-            #Return the distance
+        #Return the distance using the Pythagorean theorem
         return np.sqrt(eps1**2 + eps2**2)
     
+    #Caulculate excess demand
     def market_clearing_condition(self, p1):
-        #Calculate the excess demand (or excess supply). Since the total quantity supplied is 1, 1 is subtracted from the total demand 
         return self.demand_A(p1) + self.demand_B(p1) - 1
     
 
@@ -143,6 +140,7 @@ class MarketModel():
 
     ################### Question 5 ########################
 
+    #Define utility
     def objective_5(self, x):
         x1A, x2A = x
         return -self.utility_A(x1A, x2A)  # Pass arguments unpacked
@@ -150,12 +148,15 @@ class MarketModel():
 
 
     ######### Question 6 ########################
+    #Define constraints
     def constraints(self,x):
         x1A, x2A = x
         x1B = 1 - x1A
         x2B = 1 - x2A
         return self.utility_B(x1B, x2B) - self.utility_B(self.par.w1B, self.par.w2B)
     
+
+    #Define aggregate utility for consumer A and B
     def aggregate_utility(self, x):
         x1A, x2A = x
         x1B = 1 - x1A
@@ -165,11 +166,15 @@ class MarketModel():
 
 
     ################# Question 8 #####################
+
+    #Define the sum of the utilities
     def objective_8(self, x):
         x1A = x[0]
         x2A = x[1]
         return -(self.utility_A(x1A, x2A) + self.utility_B(1 - x1A, 1 - x2A))
+    #Define the utility for Consumer A
     def utility_A_8(self, x1A, x2A):
         return x1A**self.par.alpha * x2A**(1 - self.par.alpha)
+    #Define the utility for B
     def utility_B_8(self, x1B, x2B):
         return x1B**self.par.beta * x2B**(1 - self.par.beta)
