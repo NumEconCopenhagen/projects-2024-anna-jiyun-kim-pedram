@@ -491,10 +491,10 @@ def plot_fertility_education_country(educ_sorted, fert_sorted, country_codes, av
     avgfertEU.plot(x='Years', y='Fertility', ax=ax2, label='Average fertility in EU', color='black')
     avgeducEU.plot(x='Years', y='% tertiary educ.', ax=ax, label='Average education level in EU', color='black', linestyle='--')
 
-    # Set y-axis limits, ticks and label for population axis
+    # Set y-axis for population axis
     ax.set_ylabel('% population age 25-34 with tertiary educ.', color='black')
 
-    # Set y-axis limits, ticks and label for fertility axis
+    # Set y-axis for fertility axis
     ax2.set_ylabel('Fertility', color='black')
 
     # Add title
@@ -543,5 +543,50 @@ def plot_growth(y2y_educ, y2y_fert, country_codes, avg_growth_fert2, avg_growth_
     plt.title("Year-to-Year Changes in Fertility and Education in Selected Countries")
     # Add legend outside the plot
     fig.legend(loc='lower center', bbox_to_anchor=(0.5, -0.1), shadow=True, ncol=3)
+    # Remove the legends inside the plot
+    ax.get_legend().remove()
+    ax2.get_legend().remove()
+    plt.show()
 
+
+
+def plot_growth_subplots(y2y_educ, y2y_fert, country_codes, avg_growth_fert2, avg_growth_educ2):
+    num_countries = len(country_codes)
+    fig, axs = plt.subplots(num_countries, 1, figsize=(10, 6 * num_countries), sharex=True)
+    
+    if num_countries == 1:
+        axs = [axs]  # Ensure axs is iterable when there's only one subplot
+
+    for i, country_code in enumerate(country_codes):
+        ax = axs[i]
+        ax2 = ax.twinx()
+        
+        if country_code in y2y_educ.columns and country_code in y2y_fert.columns:
+            # Plot the data for education for each country
+            color_educ = 'tab:blue'
+            educ_label = 'Edu. Change - ' + country_code
+            y2y_educ[country_code].plot(ax=ax, label=educ_label, color=color_educ, linestyle='--')
+            
+            # Plot the data for fertility for each country
+            color_fert = 'tab:red'
+            fert_label = 'Fert. Change - ' + country_code
+            y2y_fert[country_code].plot(ax=ax2, label=fert_label, color=color_fert)
+        
+        # Add average fertility and education level across EU
+        avg_growth_fert2['% Change in Fertility'].plot(ax=ax2, label='Avg. Fert. Change', color='black')
+        avg_growth_educ2['% Change in Tertiary Education'].plot(ax=ax, label='Avg. Edu. Change', color='black',  linestyle='--')
+
+        # Set y-axis limits, ticks and label for population axis
+        ax.set_ylabel('% Change in Tertiary Education', color='black')
+        ax2.set_ylabel('% Change in Fertility', color='black')
+
+        ax.set_title(f'Year-to-Year Changes in Fertility and Education in {country_code}')
+
+        # Combine legends
+        lines, labels = ax.get_legend_handles_labels()
+        lines2, labels2 = ax2.get_legend_handles_labels()
+        ax2.legend(lines + lines2, labels + labels2, loc='upper left')
+        #set x axis for bottom plot
+        axs[-1].set_xlabel('Years')
+    fig.tight_layout()
     plt.show()
