@@ -466,7 +466,7 @@ def plot_fertility_education_country(educ_sorted, fert_sorted, country_codes, av
     fert_colors = ['tab:blue', 'tab:red', 'tab:green']
 
     ax2 = ax.twinx()  # Create a secondary y-axis that shares the same x-axis with ax
-
+    # loop through the country codes and plot the data for each country. This allows us to choose which countries to plot in the notebook
     for i, country_code in enumerate(country_codes):
         educ_country = educ_sorted.loc[educ_sorted['Country'] == country_code]
         fertility_country = fert_sorted.loc[fert_sorted['Country'] == country_code]
@@ -497,7 +497,7 @@ def plot_fertility_education_country(educ_sorted, fert_sorted, country_codes, av
     # Add title
     fig.tight_layout()
     plt.title("Fertility and education in selected countries")
-
+    # add legend outside the plot
     fig.legend(loc='lower center', bbox_to_anchor=(0.5, -0.1), shadow=True, ncol=3)
 
    
