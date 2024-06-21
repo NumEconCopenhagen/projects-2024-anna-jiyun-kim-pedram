@@ -403,7 +403,7 @@ def educ_c():
         "BE": "BEL", "BG": "BGR", "HR": "HRV", "CY": "CYP", "DK": "DNK", "CZ": "CZE", "EE": "EST", "FR": "FRA", "FI": "FIN",
         "DE": "DEU", "EL": "GRC", "HU": "HUN", "IE": "IRL", "IT": "ITA", "IS": "ISL", "LV": "LVA", "LT": "LTU", "LU": "LUX",
         "MK": "MKD", "NL": "NLD", "MT": "MLT", "ME": "MNE", "NO": "NOR", "PL": "POL", "PT": "PRT", "AT": "AUT", "RO": "ROU",
-        "SK": "SVK", "RS": "SRB", "SI": "SVN", "SE": "SWE", "ES": "ESP", "CH": "CHE", "GB": "GBR"
+        "SK": "SVK", "RS": "SRB", "SI": "SVN", "SE": "SWE", "ES": "ESP", "CH": "CHE", "UK": "GBR"
     }
     #Read the data from the CSV file and replace the 'geo' labels with the newly named ones
 
@@ -451,7 +451,7 @@ def fert():
     fert.rename(columns = {'Time':'Years'}, inplace=True)
     fert.rename(columns = {'Fertility rate, total (births per woman) [SP.DYN.TFRT.IN]':'Fertility'}, inplace=True)
     #Alter fertility rate to births per 1000 people
-    fert['Fertility'] = fert['Fertility']*1000
+    fert['Fertility'] = fert['Fertility']*1000 
 
     #convert to numeric
     fert['Fertility'] = pd.to_numeric(fert['Fertility'], errors='coerce')
@@ -563,12 +563,12 @@ def plot_growth_subplots(y2y_educ, y2y_fert, country_codes, avg_growth_fert2, av
         
         if country_code in y2y_educ.columns and country_code in y2y_fert.columns:
             # Plot the data for education for each country
-            color_educ = 'tab:blue'
+            color_educ = 'tab:green'
             educ_label = 'Edu. Change - ' + country_code
             y2y_educ[country_code].plot(ax=ax, label=educ_label, color=color_educ, linestyle='--')
             
             # Plot the data for fertility for each country
-            color_fert = 'tab:red'
+            color_fert = 'tab:green'
             fert_label = 'Fert. Change - ' + country_code
             y2y_fert[country_code].plot(ax=ax2, label=fert_label, color=color_fert)
         
@@ -578,7 +578,9 @@ def plot_growth_subplots(y2y_educ, y2y_fert, country_codes, avg_growth_fert2, av
 
         # Set y-axis limits, ticks and label for population axis
         ax.set_ylabel('% Change in Tertiary Education', color='black')
+        ax.set_ylim(-10, 10) # Set y-axis limits
         ax2.set_ylabel('% Change in Fertility', color='black')
+        ax2.set_ylim(-10, 10) # Set y2-axis limits
 
         ax.set_title(f'Year-to-Year Changes in Fertility and Education in {country_code}')
 
