@@ -54,21 +54,35 @@ class Model3:
             if 0 <= r_ABC[0] <= 1 and 0 <= r_ABC[1] <= 1 and 0 <= r_ABC[2] <= 1:
                 y_ABC = r_ABC[0] * self.A + r_ABC[1] * self.B + r_ABC[2] * self.C
                 in_triangle_ABC = True
-        # for CDA
+                print(f"y in ABC with coordinates: {y_ABC}") #print y in ABC if true
+                print(f"Barycentric coordinates of ABC: {r_ABC}") #print barycentric coordinates ABC
+            else:
+                print("y not in ABC")
+                if r_ABC is not None:
+                    print(f"Barycentric coordinates of ABC: {r_ABC}") #print barycentric coordinates ABC
+        #for CDA
         if not np.isnan(self.C).any() and not np.isnan(self.D).any() and not np.isnan(self.A).any():
             r_CDA = self.block_1(self.C, self.D, self.A, self.y)
             if 0 <= r_CDA[0] <= 1 and 0 <= r_CDA[1] <= 1 and 0 <= r_CDA[2] <= 1:
                 y_CDA = r_CDA[0] * self.C + r_CDA[1] * self.D + r_CDA[2] * self.A
                 in_triangle_CDA = True
+                print(f"y in CDA with coordinates: {y_CDA}") #print y in CDA if true
+                print(f"Barycentric coordinates of CDA: {r_CDA}") #print barycentric coordinates CDA
+            else:
+                print("y not in CDA")
+                if r_CDA is not None:
+                    print(f"Barycentric coordinates of CDA: {r_CDA}") #print barycentric coordinates CDA
         
         return {
-            "in_triangle_ABC": in_triangle_ABC, #return if y is in the triangle
-            "in_triangle_CDA": in_triangle_CDA, #return if y is in the triangle
-            "r_ABC": r_ABC, #return the barycentric coordinates of ABC
-            "r_CDA": r_CDA, #return the barycentric coordinates of CDA
-            "y_ABC": y_ABC, #return the point y if in ABC
-            "y_CDA": y_CDA #return the point y if in CDA
+            "in_triangle_ABC": in_triangle_ABC,
+            "in_triangle_CDA": in_triangle_CDA,
+            "r_ABC": r_ABC,
+            "r_CDA": r_CDA,
+            "y_ABC": y_ABC,
+            "y_CDA": y_CDA
         }
+    
+
 
     #plot the points and the triangles, none if there are NaN values
     def plot_point_and_tri(self):
@@ -105,30 +119,18 @@ class Model3:
     
     #define the function to approximate f for question 3
     def approx_f(self):
-        result = self.check_y_in_tri()
+        result3 = self.check_y_in_tri()
 
         f_y_ABC = np.nan
         f_y_CDA = np.nan
-        
-        if result["in_triangle_ABC"]:
-            f_y_ABC = result["r_ABC"][0] * self.f(self.A) + result["r_ABC"][1] * self.f(self.B) + result["r_ABC"][2] * self.f(self.C)
-            print(f"y is in the triangle ABC with coordinates: {result['y_ABC']}")
-            print(f"Barycentric coordinates in triangle ABC: {result['r_ABC']}")
-        else:
-            print("y is not in the triangle ABC")
-            if result["r_ABC"] is not None:
-                print(f"Barycentric coordinates for ABC: {result['r_ABC']}")
-        
-        if result["in_triangle_CDA"]:
-            f_y_CDA = result["r_CDA"][0] * self.f(self.C) + result["r_CDA"][1] * self.f(self.D) + result["r_CDA"][2] * self.f(self.A)
-            print(f"y is in the triangle CDA with coordinates: {result['y_CDA']}")
-            print(f"Barycentric coordinates in triangle CDA: {result['r_CDA']}")
-        else:
-            print("y is not in the triangle CDA")
-            if result["r_CDA"] is not None:
-                print(f"Barycentric coordinates for CDA: {result['r_CDA']}")
-        
-        # Choose the best approximation
+        #if result is in ABC
+        if result3["in_triangle_ABC"]:
+            f_y_ABC = result3["r_ABC"][0] * self.f(self.A) + result3["r_ABC"][1] * self.f(self.B) + result3["r_ABC"][2] * self.f(self.C)
+        # if result is in CDA
+        if result3["in_triangle_CDA"]:
+            f_y_CDA = result3["r_CDA"][0] * self.f(self.C) + result3["r_CDA"][1] * self.f(self.D) + result3["r_CDA"][2] * self.f(self.A)
+       
+        # Choose best approximation
         if not np.isnan(f_y_ABC):
             f_y = f_y_ABC
         elif not np.isnan(f_y_CDA):
@@ -136,11 +138,31 @@ class Model3:
         else:
             f_y = np.nan
 
-        # True value of f(y)
+        # True value
         true_value = self.f(self.y)
+        
+        #difference between the approximation and the true value
+        diff_true = abs(f_y - true_value)
 
-        # Print the approximation as well as the true value
+        # Print approximation, true value and difference between them
         print("Approximation f(y):", f_y)
         print("True value f(y):", true_value)
-        return f_y, true_value
+        print("Difference:", diff_true)
+        return f_y, true_value, diff_true
+   
+    # question 4
+    def func_4(self, Y):
+        prior_y = self.y  # Save the y values from before so we can reset it after. In this way this function wont interfere with the previous functions when we try to call them again
+        prior_A, prior_B, prior_C, prior_D = self.A, self.B, self.C, self.D  # Save prior points A, B, C, D
+        results4 = []
+        Y = [(0.2, 0.2), (0.8, 0.2), (0.8, 0.8), (0.8, 0.2), (0.5, 0.5)]
+        for y in Y:
+            self.y = y
+            self.A, self.B, self.C, self.D = self.block_2(self.X, self.y)
+            print(f"\nEvaluate for point y = {y}:")
+            result4 = self.approx_f()
+            results4.append((y, result4))
+        self.y = prior_y  # Restore prior y values
+        self.A, self.B, self.C, self.D = prior_A, prior_B, prior_C, prior_D  # Restore prior points A, B, C, D 
+    
 
