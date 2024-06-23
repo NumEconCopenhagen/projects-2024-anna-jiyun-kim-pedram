@@ -1,17 +1,21 @@
 import numpy as np # Import numpy 
 import matplotlib.pyplot as plt # Import matplotlib.pyplot
-
+#Define the algorithm in a class where it can be called and used
 class Model3:
     def __init__(self, seed=2024):
         self.seed = seed
         self.X, self.y = self.sample(seed)
         self.A, self.B, self.C, self.D = self.block_2(self.X, self.y)
+        self.f = lambda x: x[0] * x[1] #define the function to be used in question 3
+        self.F = np.array([self.f(x) for x in self.X]) #for question 3
+
     #Define the sample to generate points based on the seed
     def sample(self, seed):
         rng = np.random.default_rng(seed)
         X = rng.uniform(size=(50, 2))
         y = rng.uniform(size=(2,))
         return X, y
+    
     #define block 1 to find the barycentric coordinates. The denominator is the determinant
     def block_1(self, A, B, C, y):
         denominator = ((B[1]-C[1])*(A[0]-C[0]) + (C[0]-B[0])*(A[1]-C[1]))
@@ -19,6 +23,7 @@ class Model3:
         r2 = ((C[1]-A[1])*(y[0]-C[0]) + (A[0]-C[0])*(y[1]-C[1])) / denominator
         r3 = 1 - r1 - r2
         return r1, r2, r3
+    
     #define block 2 to find the points A, B, C, D given the conditions
     def block_2(self, X, y):
         A = min((x for x in X if x[0] > y[0] and x[1] > y[1]), key=lambda x: np.linalg.norm(x - y), default=None) #linalg.norm is the euclidean distance
@@ -97,3 +102,45 @@ class Model3:
         plt.legend()
         plt.grid(True)
         plt.show()
+    
+    #define the function to approximate f for question 3
+    def approx_f(self):
+        result = self.check_y_in_tri()
+
+        f_y_ABC = np.nan
+        f_y_CDA = np.nan
+        
+        if result["in_triangle_ABC"]:
+            f_y_ABC = result["r_ABC"][0] * self.f(self.A) + result["r_ABC"][1] * self.f(self.B) + result["r_ABC"][2] * self.f(self.C)
+            print(f"y is in the triangle ABC with coordinates: {result['y_ABC']}")
+            print(f"Barycentric coordinates in triangle ABC: {result['r_ABC']}")
+        else:
+            print("y is not in the triangle ABC")
+            if result["r_ABC"] is not None:
+                print(f"Barycentric coordinates for ABC: {result['r_ABC']}")
+        
+        if result["in_triangle_CDA"]:
+            f_y_CDA = result["r_CDA"][0] * self.f(self.C) + result["r_CDA"][1] * self.f(self.D) + result["r_CDA"][2] * self.f(self.A)
+            print(f"y is in the triangle CDA with coordinates: {result['y_CDA']}")
+            print(f"Barycentric coordinates in triangle CDA: {result['r_CDA']}")
+        else:
+            print("y is not in the triangle CDA")
+            if result["r_CDA"] is not None:
+                print(f"Barycentric coordinates for CDA: {result['r_CDA']}")
+        
+        # Choose the best approximation
+        if not np.isnan(f_y_ABC):
+            f_y = f_y_ABC
+        elif not np.isnan(f_y_CDA):
+            f_y = f_y_CDA
+        else:
+            f_y = np.nan
+
+        # True value of f(y)
+        true_value = self.f(self.y)
+
+        # Print the approximation as well as the true value
+        print("Approximation f(y):", f_y)
+        print("True value f(y):", true_value)
+        return f_y, true_value
+
