@@ -95,19 +95,19 @@ class Model3:
         plt.scatter(self.y[0], self.y[1], c='red', label='Point y', zorder=5)
         #plot the points if they are not NaN
         if not np.isnan(self.A).any():
-            plt.scatter(*self.A, c='green', label='Point A', zorder=5)
+            plt.scatter(*self.A, c='orange', label='Point A', zorder=5)
         if not np.isnan(self.B).any():
-            plt.scatter(*self.B, c='orange', label='Point B', zorder=5)
+            plt.scatter(*self.B, c='cyan', label='Point B', zorder=5)
         if not np.isnan(self.C).any():
-            plt.scatter(*self.C, c='purple', label='Point C', zorder=5)
+            plt.scatter(*self.C, c='black', label='Point C', zorder=5)
         if not np.isnan(self.D).any():
             plt.scatter(*self.D, c='brown', label='Point D', zorder=5)
         
         #plot the triangles if they are not NaN
         if not np.isnan(self.A).any() and not np.isnan(self.B).any() and not np.isnan(self.C).any():
-            plt.plot([self.A[0], self.B[0], self.C[0], self.A[0]], [self.A[1], self.B[1], self.C[1], self.A[1]], 'green', label='Triangle ABC', linestyle='dashed')
+            plt.plot([self.A[0], self.B[0], self.C[0], self.A[0]], [self.A[1], self.B[1], self.C[1], self.A[1]], 'pink', label='Triangle ABC', linestyle='dashed')
         if not np.isnan(self.C).any() and not np.isnan(self.D).any() and not np.isnan(self.A).any():
-            plt.plot([self.C[0], self.D[0], self.A[0], self.C[0]], [self.C[1], self.D[1], self.A[1], self.C[1]], 'orange', label='Triangle CDA', linestyle='dashed')
+            plt.plot([self.C[0], self.D[0], self.A[0], self.C[0]], [self.C[1], self.D[1], self.A[1], self.C[1]], 'yellow', label='Triangle CDA', linestyle='dashed')
         
         #Define labels, title and legend
         plt.xlabel('$x_1$')
