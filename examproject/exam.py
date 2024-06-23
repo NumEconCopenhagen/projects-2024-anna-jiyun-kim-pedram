@@ -7,34 +7,34 @@ import matplotlib.pyplot as plt # Import matplotlib.pyplot
 # PROBLEM 3
 #Define the algorithm in a class where it can be called and used
 class Model3:
-    def __init__(self, seed=2024):
-        self.seed = seed
-        self.X, self.y = self.sample(seed)
-        self.A, self.B, self.C, self.D = self.block_2(self.X, self.y)
+    def __init__(self, seed=2024): #define the seed
+        self.seed = seed #set the seed
+        self.X, self.y = self.sample(seed) #generate the sample
+        self.A, self.B, self.C, self.D = self.block_2(self.X, self.y) #find the points A, B, C, D
         self.f = lambda x: x[0] * x[1] #define the function to be used in question 3
         self.F = np.array([self.f(x) for x in self.X]) #for question 3
 
     #Define the sample to generate points based on the seed
-    def sample(self, seed):
-        rng = np.random.default_rng(seed)
-        X = rng.uniform(size=(50, 2))
-        y = rng.uniform(size=(2,))
+    def sample(self, seed): #define the sample
+        rng = np.random.default_rng(seed) #define random number generator
+        X = rng.uniform(size=(50, 2)) #generate 50 uniform random numbers
+        y = rng.uniform(size=(2,)) #generate 2 uniform random numbers
         return X, y
     
     #define block 1 to find the barycentric coordinates. The denominator is the determinant
     def block_1(self, A, B, C, y):
-        denominator = ((B[1]-C[1])*(A[0]-C[0]) + (C[0]-B[0])*(A[1]-C[1]))
-        r1 = ((B[1]-C[1])*(y[0]-C[0]) + (C[0]-B[0])*(y[1]-C[1])) / denominator
-        r2 = ((C[1]-A[1])*(y[0]-C[0]) + (A[0]-C[0])*(y[1]-C[1])) / denominator
-        r3 = 1 - r1 - r2
+        denominator = ((B[1]-C[1])*(A[0]-C[0]) + (C[0]-B[0])*(A[1]-C[1])) #determinant
+        r1 = ((B[1]-C[1])*(y[0]-C[0]) + (C[0]-B[0])*(y[1]-C[1])) / denominator #barycentric coordinate r1
+        r2 = ((C[1]-A[1])*(y[0]-C[0]) + (A[0]-C[0])*(y[1]-C[1])) / denominator #barycentric coordinate r2
+        r3 = 1 - r1 - r2 #barycentric coordinate r3
         return r1, r2, r3
     
-    #define block 2 to find the points A, B, C, D given the conditions
+    #define block 2 to find the minimized points A, B, C, D given the conditions in a generator process. linalg.norm is the euclidean distance
     def block_2(self, X, y):
-        A = min((x for x in X if x[0] > y[0] and x[1] > y[1]), key=lambda x: np.linalg.norm(x - y), default=None) #linalg.norm is the euclidean distance
-        B = min((x for x in X if x[0] > y[0] and x[1] < y[1]), key=lambda x: np.linalg.norm(x - y), default=None)
-        C = min((x for x in X if x[0] < y[0] and x[1] < y[1]), key=lambda x: np.linalg.norm(x - y), default=None)
-        D = min((x for x in X if x[0] < y[0] and x[1] > y[1]), key=lambda x: np.linalg.norm(x - y), default=None)
+        A = min((x for x in X if x[0] > y[0] and x[1] > y[1]), key=lambda x: np.linalg.norm(x - y), default=None) #point A
+        B = min((x for x in X if x[0] > y[0] and x[1] < y[1]), key=lambda x: np.linalg.norm(x - y), default=None) #point B
+        C = min((x for x in X if x[0] < y[0] and x[1] < y[1]), key=lambda x: np.linalg.norm(x - y), default=None) #point C
+        D = min((x for x in X if x[0] < y[0] and x[1] > y[1]), key=lambda x: np.linalg.norm(x - y), default=None) #point D
         #return A, B, C, D, if None, return NaN
         if A is None:
             A = np.nan
@@ -48,24 +48,24 @@ class Model3:
     
     #check which triangle y is in and return the barycentric coordinates as well as the point y. None if y is not in any triangle
     def check_y_in_tri(self):
-        r_ABC, r_CDA = None, None
-        y_ABC, y_CDA = None, None
+        r_ABC, r_CDA = None, None #set the barycentric coordinates to None
+        y_ABC, y_CDA = None, None #set the point y to None
         
-        in_triangle_ABC = False
-        in_triangle_CDA = False
+        in_triangle_ABC = False #set the boolean to False
+        in_triangle_CDA = False #set the boolean to False
         #for ABC
-        if not np.isnan(self.A).any() and not np.isnan(self.B).any() and not np.isnan(self.C).any():
-            r_ABC = self.block_1(self.A, self.B, self.C, self.y)
-            if 0 <= r_ABC[0] <= 1 and 0 <= r_ABC[1] <= 1 and 0 <= r_ABC[2] <= 1:
-                y_ABC = r_ABC[0] * self.A + r_ABC[1] * self.B + r_ABC[2] * self.C
-                in_triangle_ABC = True
+        if not np.isnan(self.A).any() and not np.isnan(self.B).any() and not np.isnan(self.C).any(): #if there are no NaN values
+            r_ABC = self.block_1(self.A, self.B, self.C, self.y) #find barycentric coordinates
+            if 0 <= r_ABC[0] <= 1 and 0 <= r_ABC[1] <= 1 and 0 <= r_ABC[2] <= 1: #if the barycentric coordinates are between 0 and 1
+                y_ABC = r_ABC[0] * self.A + r_ABC[1] * self.B + r_ABC[2] * self.C #find the point y
+                in_triangle_ABC = True #set the boolean to True
                 print(f"y in ABC with coordinates: {y_ABC}") #print y in ABC if true
                 print(f"Barycentric coordinates of ABC: {r_ABC}") #print barycentric coordinates ABC
-            else:
+            else: #if the barycentric coordinates are not between 0 and 1
                 print("y not in ABC")
-                if r_ABC is not None:
+                if r_ABC is not None: 
                     print(f"Barycentric coordinates of ABC: {r_ABC}") #print barycentric coordinates ABC
-        #for CDA
+        #for CDA the same process as before
         if not np.isnan(self.C).any() and not np.isnan(self.D).any() and not np.isnan(self.A).any():
             r_CDA = self.block_1(self.C, self.D, self.A, self.y)
             if 0 <= r_CDA[0] <= 1 and 0 <= r_CDA[1] <= 1 and 0 <= r_CDA[2] <= 1:
@@ -94,24 +94,24 @@ class Model3:
         if np.isnan(self.A).any() or np.isnan(self.B).any() or np.isnan(self.C).any() or np.isnan(self.D).any():
             print("NaN")
             return
-        #set the figure
+        #set the figure and size
         plt.figure(figsize=(8, 8))
-        plt.scatter(self.X[:, 0], self.X[:, 1], c='blue', label='Points in X')
-        plt.scatter(self.y[0], self.y[1], c='red', label='Point y', zorder=5)
+        plt.scatter(self.X[:, 0], self.X[:, 1], c='blue', label='Points in X') #plot the points in X
+        plt.scatter(self.y[0], self.y[1], c='red', label='Point y', zorder=5) #plot the point y
         #plot the points if they are not NaN
         if not np.isnan(self.A).any():
-            plt.scatter(*self.A, c='orange', label='Point A', zorder=5)
+            plt.scatter(*self.A, c='orange', label='Point A', zorder=5) #plot point A
         if not np.isnan(self.B).any():
-            plt.scatter(*self.B, c='cyan', label='Point B', zorder=5)
+            plt.scatter(*self.B, c='cyan', label='Point B', zorder=5) #plot point B
         if not np.isnan(self.C).any():
-            plt.scatter(*self.C, c='black', label='Point C', zorder=5)
+            plt.scatter(*self.C, c='black', label='Point C', zorder=5) #plot point C
         if not np.isnan(self.D).any():
-            plt.scatter(*self.D, c='brown', label='Point D', zorder=5)
+            plt.scatter(*self.D, c='brown', label='Point D', zorder=5) #plot point D
         
         #plot the triangles if they are not NaN
-        if not np.isnan(self.A).any() and not np.isnan(self.B).any() and not np.isnan(self.C).any():
+        if not np.isnan(self.A).any() and not np.isnan(self.B).any() and not np.isnan(self.C).any(): #plot ABC
             plt.plot([self.A[0], self.B[0], self.C[0], self.A[0]], [self.A[1], self.B[1], self.C[1], self.A[1]], 'pink', label='Triangle ABC', linestyle='dashed')
-        if not np.isnan(self.C).any() and not np.isnan(self.D).any() and not np.isnan(self.A).any():
+        if not np.isnan(self.C).any() and not np.isnan(self.D).any() and not np.isnan(self.A).any(): #plot CDA
             plt.plot([self.C[0], self.D[0], self.A[0], self.C[0]], [self.C[1], self.D[1], self.A[1], self.C[1]], 'yellow', label='Triangle CDA', linestyle='dashed')
         
         #Define labels, title and legend
@@ -124,30 +124,30 @@ class Model3:
     
     #define the function to approximate f for question 3
     def approx_f(self):
-        result3 = self.check_y_in_tri()
+        result3 = self.check_y_in_tri() 
 
-        f_y_ABC = np.nan
-        f_y_CDA = np.nan
+        f_y_ABC = np.nan #set f(y) in ABC to NaN
+        f_y_CDA = np.nan #set f(y) in CDA to NaN
         #if result is in ABC
-        if result3["in_triangle_ABC"]:
-            f_y_ABC = result3["r_ABC"][0] * self.f(self.A) + result3["r_ABC"][1] * self.f(self.B) + result3["r_ABC"][2] * self.f(self.C)
+        if result3["in_triangle_ABC"]: #if y is in ABC
+            f_y_ABC = result3["r_ABC"][0] * self.f(self.A) + result3["r_ABC"][1] * self.f(self.B) + result3["r_ABC"][2] * self.f(self.C) #find f(y) approx in ABC
         # if result is in CDA
-        if result3["in_triangle_CDA"]:
-            f_y_CDA = result3["r_CDA"][0] * self.f(self.C) + result3["r_CDA"][1] * self.f(self.D) + result3["r_CDA"][2] * self.f(self.A)
+        if result3["in_triangle_CDA"]: #if y is in CDA
+            f_y_CDA = result3["r_CDA"][0] * self.f(self.C) + result3["r_CDA"][1] * self.f(self.D) + result3["r_CDA"][2] * self.f(self.A) #find f(y) approx in CDA
        
         # Choose best approximation
-        if not np.isnan(f_y_ABC):
-            f_y = f_y_ABC
-        elif not np.isnan(f_y_CDA):
-            f_y = f_y_CDA
-        else:
-            f_y = np.nan
+        if not np.isnan(f_y_ABC): #if f(y) in ABC is not NaN
+            f_y = f_y_ABC #set f(y) to approx in ABC
+        elif not np.isnan(f_y_CDA): #if f(y) in CDA is not NaN
+            f_y = f_y_CDA #set f(y) to approx in CDA
+        else: #if both are NaN
+            f_y = np.nan #set f(y) to NaN
 
         # True value
-        true_value = self.f(self.y)
+        true_value = self.f(self.y) 
         
         #difference between the approximation and the true value
-        diff_true = abs(f_y - true_value)
+        diff_true = abs(f_y - true_value) 
 
         # Print approximation, true value and difference between them
         print("Approximation f(y):", f_y)
@@ -159,13 +159,13 @@ class Model3:
     def func_4(self, Y):
         prior_y = self.y  # Save the y values from before so we can reset it after. In this way this function wont interfere with the previous functions when we try to call them again
         prior_A, prior_B, prior_C, prior_D = self.A, self.B, self.C, self.D  # Save prior points A, B, C, D
-        results4 = []
-        for y in Y:
-            self.y = y
-            self.A, self.B, self.C, self.D = self.block_2(self.X, self.y)
+        results4 = [] #list to store results
+        for y in Y: 
+            self.y = y 
+            self.A, self.B, self.C, self.D = self.block_2(self.X, self.y) #points A, B, C, D in the new y
             print(f"\nEvaluating for y = {y}:")
-            result4 = self.approx_f()
-            results4.append((y, result4))
+            result4 = self.approx_f() #approximate for the new y
+            results4.append((y, result4)) #append the results
         self.y = prior_y  # Restore prior y values
         self.A, self.B, self.C, self.D = prior_A, prior_B, prior_C, prior_D  # Restore prior points A, B, C, D 
         return results4
