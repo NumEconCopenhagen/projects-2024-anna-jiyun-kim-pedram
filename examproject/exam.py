@@ -1,5 +1,10 @@
 import numpy as np # Import numpy 
 import matplotlib.pyplot as plt # Import matplotlib.pyplot
+
+
+
+
+# PROBLEM 3
 #Define the algorithm in a class where it can be called and used
 class Model3:
     def __init__(self, seed=2024):
