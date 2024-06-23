@@ -155,14 +155,14 @@ class Model3:
         prior_y = self.y  # Save the y values from before so we can reset it after. In this way this function wont interfere with the previous functions when we try to call them again
         prior_A, prior_B, prior_C, prior_D = self.A, self.B, self.C, self.D  # Save prior points A, B, C, D
         results4 = []
-        Y = [(0.2, 0.2), (0.8, 0.2), (0.8, 0.8), (0.8, 0.2), (0.5, 0.5)]
         for y in Y:
             self.y = y
             self.A, self.B, self.C, self.D = self.block_2(self.X, self.y)
-            print(f"\nEvaluate for point y = {y}:")
+            print(f"\nEvaluating for y = {y}:")
             result4 = self.approx_f()
             results4.append((y, result4))
         self.y = prior_y  # Restore prior y values
         self.A, self.B, self.C, self.D = prior_A, prior_B, prior_C, prior_D  # Restore prior points A, B, C, D 
+        return results4
     
 
