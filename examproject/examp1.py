@@ -1,5 +1,13 @@
+from types import SimpleNamespace
+import numpy as np
+from scipy.optimize import minimize, root
+import pandas as pd
+import matplotlib.pyplot as plt
+
+
 class ProductionEconomyClass:
     def __init__(self):
+
         self.par = SimpleNamespace()
         # firms
         self.par.A = 1.0
