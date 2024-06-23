@@ -169,5 +169,12 @@ class Model3:
         self.y = prior_y  # Restore prior y values
         self.A, self.B, self.C, self.D = prior_A, prior_B, prior_C, prior_D  # Restore prior points A, B, C, D 
         return results4
+    #Define relative errors for question 4
+    def relative_error(self, results4):
+        relative_errors = []
+        for y, (f_y, true_value, diff_true) in results4:
+            relative_error = diff_true / true_value
+            relative_errors.append((y, relative_error))
+        return relative_errors
     
 
