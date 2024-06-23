@@ -5,4 +5,8 @@
 - Pedram Nick Yazdanfard
 - Anna Svenningsen
 
-This repository contains the examproject, which consits of 1 notebook file and 2 python files
+The **results** of the project can be seen from running [exam.ipynb](exam.ipynb).
+
+**Dependencies:** Apart from a standard Anaconda Python 3 installation, the project requires no further packages.
+
+This repository contains the examproject, which consists of 1 notebook file and 2 python files.
